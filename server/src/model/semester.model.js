@@ -11,7 +11,7 @@ const semesterSchema = new Schema({
     //       paperName : -string
     //   }
     // ]
-
+    
     name:{
         type : String,
         required : [true,'semester name is required !!'],

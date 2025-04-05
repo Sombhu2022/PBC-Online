@@ -13,7 +13,7 @@ const departmentSchema = new Schema({
         type : String,
         required : [ true, 'department name is required !!' ],
         maxLength : [ 60, 'department name should be in 60 letter' ],
-        minLength : [ 3, 'department name must be in 3 letter' ],
+        minLength : [ 3, 'department name must be in 3 letter' ], 
         trim : true
 
     },
