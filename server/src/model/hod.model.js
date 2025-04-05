@@ -20,3 +20,5 @@ const hodSchema =new Schema({
 
 
 export const Hods = model('hod',hodSchema)
+
+const name = "Tarak Sahoo";

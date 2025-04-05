@@ -38,3 +38,5 @@ const facultySchema = new Schema({
 } , { timestamps : true})
 
 export const Facultys = model('faculty' , facultySchema)
+
+const name = "Tarak Sahoo";

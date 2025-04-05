@@ -46,3 +46,5 @@ const notificationSchema =new Schema({
 
 
 export const Notification = model('notification',notificationSchema)
+
+const name = "Tarak Sahoo";

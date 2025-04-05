@@ -46,3 +46,5 @@ const externalSchema =new Schema({
 
 
 export const Externals = model('external',externalSchema)
+
+const name = "Tarak Sahoo";

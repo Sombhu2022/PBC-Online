@@ -24,3 +24,6 @@ const studentSchema = new Schema({
 },{timestamps : true})
 
 export const Students = model('student',studentSchema)
+
+
+const name = "Tarak Sahoo";
