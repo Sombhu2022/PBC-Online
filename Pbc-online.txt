@@ -85,6 +85,7 @@ table info ---
        - deperment (deparmantalId)
        - sem (semId )
        - paperCode
+       - paperName
        - media (pdf / image )
 
     9 . metting 
@@ -118,21 +119,101 @@ table info ---
        - user
        - deparmanta
        - sem
-       - routin : [
-           day :{ 
-             name : string
-             routin : [
-                {
-                    paperCode : string
-                    prof : user
-                    StartingTime : date 
-                    Endingtime : date 
-                }
-             ]
-           }
-       ]
+       - day : name : string
+       
+
+       13. daybaseroutins :
+          - routin
+          - dayRoutin : {
+               paperCode : string
+               prof : user
+               StartingTime : date 
+               Endingtime : date 
+          }
+
 
     
     sukanta - deparmanta , sem , routin 
     sourav - metting , certificate , syllebus , 
     tarak - hod , faculty , Studens , external , notifications
+
+    
+    -------------------------- API creation  ---------------------------------------
+
+     I . ------------------------ syllebus --------------------------
+      
+      base path : api/v1/syllebus
+
+       1. create - (post method)
+         - authenticate 
+         - only hod can create syllebus
+         - payload : {
+              - userId ,
+              - deparmantalId ,
+              - semId ,
+              - paperCode
+              - paperName
+              - media  
+           }
+         
+      2. update - (patch method)
+         - authenticate 
+         - only hod can update syllebus
+         - payload :
+            body : {
+              - userId ,
+              - deparmantalId ,
+              - semId ,
+              - paperCode
+              - paperName
+              - media  
+           } 
+           params : { syllebusId }
+
+      3. delete - (delete method)
+         - authenticate 
+         - only hod can delete syllebus
+         - payload : param : { syllebusId }
+
+   
+  ( II ) ------------------------ routins --------------------------
+
+      base url : api/v1/routins
+
+      1. create - (post method)
+         - authenticate 
+         - only hod can create routins
+         - payload : {
+              - userId ,
+              - deparmantalId ,
+              - semId ,
+              - routin 
+         }
+
+   ( III ) ------------------------ notifications --------------------------
+
+      base url : api/v1/notifications
+
+      1. create - (post method)
+         - authenticate 
+         - only hod can create notifications
+         - payload : 
+            body : {
+
+            }
+      
+      2. update - (patch method)
+         - authenticate 
+         - only hod can update notifications
+         - payload : 
+            body : {
+
+            }
+            params : { notificationId }
+      
+      3. delete - (delete method)
+         - authenticate 
+         - only hod can delete notifications
+         - payload : param : { notificationId }
+
+      
