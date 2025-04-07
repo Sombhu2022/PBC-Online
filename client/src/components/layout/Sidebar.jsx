@@ -87,43 +87,55 @@ export function Sidebar() {
                     label="Dashboard"
                     isActive={true}
                     isCollapsed={isCollapsed}
+                    link={"/"}
                 />
                 <SidebarLink
                     icon={PieChart}
                     label="Analytics"
                     isCollapsed={isCollapsed}
+                    link={"/analytics"}
                 />
                 <SidebarLink
                     icon={Users}
                     label="Customers"
                     isCollapsed={isCollapsed}
+                    link={"/customers"}
                 />
                 <SidebarLink
                     icon={BarChart3}
                     label="Reports"
                     isCollapsed={isCollapsed}
+                    link={"/reports"}
                 />
                 <SidebarLink
                     icon={Calendar}
-                    label="Calendar"
+                    label="Routines"
                     isCollapsed={isCollapsed}
+                    link={"/routines"}
                 />
                 <SidebarLink
                     icon={MessageSquare}
-                    label="Messages"
+                    label="Meetings"
                     isCollapsed={isCollapsed}
+                    link={"/meetings"}
                 />
 
-                <div className={`mt-auto ${isCollapsed ? "" : "pt-4"}`}>
+                <div
+                    className={`mt-auto flex flex-col gap-1 ${
+                        isCollapsed ? "" : "pt-4"
+                    }`}
+                >
                     <SidebarLink
                         icon={Settings}
                         label="Settings"
                         isCollapsed={isCollapsed}
+                        link={"/settings"}
                     />
                     <SidebarLink
                         icon={HelpCircle}
                         label="Help"
                         isCollapsed={isCollapsed}
+                        link={"/help"}
                     />
                 </div>
             </div>
