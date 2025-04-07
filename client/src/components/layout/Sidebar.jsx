@@ -50,7 +50,9 @@ export function Sidebar() {
           transition={{ duration: 0.2 }}
           className={`font-semibold text-xl ${isCollapsed ? 'hidden' : 'block'}`}
         >
-          Dashboard
+        <div className='flex gap-1 items-end justify-center'> 
+           PBC Online <div className='h-2 w-2 mb-1 bg-green-500 rounded-full'></div>
+          </div> 
         </motion.div>
         <Button variant="ghost" size="icon" onClick={toggleSidebar}>
           {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
