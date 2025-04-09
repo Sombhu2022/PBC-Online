@@ -7,6 +7,10 @@ export const RESPONSE_MESSAGES = {
     FETCH_ALL_TODOS: "Fetch all todo list",
     NO_TODOS: "No todos are available!",
     INTERNAL_ERROR: "Internal Error",
+    SYLLABUS_CREATED: "Syllabus created successfully",
+    SYLLABUS_UPDATED: "Syllabus update success",
+    SYLLABUS_DELETE: "Syllabus deleted success",
+    NO_CONTENT: "No content found",
 
-    
+
 }
