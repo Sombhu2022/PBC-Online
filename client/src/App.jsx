@@ -6,10 +6,18 @@ import { Provider } from "react-redux";
 import { store } from "@/redux/store";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import Dashboard from "./pages/Dashboard";
-import NotFound from "./pages/NotFound";
 import Layout from "./components/layout/Layout";
-import Routines from "./pages/Routines";
+import {
+    Cirtificates,
+    Dashboard,
+    Meetings,
+    Members,
+    NotFound,
+    NoticeBoard,
+    Routines,
+    Settings,
+    Syllabus,
+} from "./pages";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -28,6 +36,27 @@ const App = () => (
                                 <Route
                                     path="/routines"
                                     element={<Routines />}
+                                />
+                                <Route
+                                    path="/cirtificates"
+                                    element={<Cirtificates />}
+                                />
+                                <Route
+                                    path="/meetings"
+                                    element={<Meetings />}
+                                />
+                                <Route path="/members" element={<Members />} />
+                                <Route
+                                    path="/notice-board"
+                                    element={<NoticeBoard />}
+                                />
+                                <Route
+                                    path="/settings"
+                                    element={<Settings />}
+                                />
+                                <Route
+                                    path="/syllabus"
+                                    element={<Syllabus />}
                                 />
                             </Route>
                             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

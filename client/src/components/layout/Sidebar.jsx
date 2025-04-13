@@ -7,30 +7,69 @@ import {
     Home,
     ChevronLeft,
     ChevronRight,
-    PieChart,
     Users,
     Settings,
     Calendar,
-    MessageSquare,
     BarChart3,
     HelpCircle,
+    ClipboardList,
+    LibraryBig,
+    User,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 const SidebarLink = ({ icon: Icon, label, isCollapsed, link }) => {
     return (
-        <NavLink
-            className={({ isActive }) =>
-                `w-full flex flex-row h-10 items-center justify-start rounded-md ${
-                    isActive
-                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                        : "hover:bg-sidebar-accent/50 text-sidebar-foreground"
-                } ${isCollapsed ? "justify-center rounded-lg" : "px-5"}`
-            }
-            to={link}
-        >
-            <Icon className="h-5 w-5 mr-2 text-xl" size={24} />
-            {!isCollapsed && <span>{label}</span>}
+        <NavLink to={link}>
+            {({ isActive }) => (
+                <motion.div
+                    className={`w-full relative flex flex-row h-10 items-center justify-start rounded-md transition-colors duration-200
+                        ${
+                            isActive
+                                ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                                : "hover:bg-sidebar-accent/50 text-sidebar-foreground"
+                        }
+                        ${isCollapsed ? "justify-center rounded-lg" : "px-5"}
+                    `}
+                    initial={false}
+                    animate={{
+                        backgroundColor: isActive ? "" : "transparent",
+                    }}
+                    transition={{ duration: 0.2 }}
+                >
+                    {isActive && (
+                        <motion.div
+                            layoutId="activeIndicator"
+                            className="absolute left-0 w-1 h-full dark:bg-slate-200 bg-slate-800 rounded"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.3 }}
+                        />
+                    )}
+
+                    <motion.div
+                        animate={{
+                            marginRight: isCollapsed ? 0 : 8,
+                            scale: isActive ? 1.1 : 1,
+                        }}
+                        transition={{ duration: 0.3 }}
+                    >
+                        <Icon className="h-5 w-5 text-xl" size={24} />
+                    </motion.div>
+
+                    {!isCollapsed && (
+                        <motion.span
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -10 }}
+                            transition={{ duration: 0.3 }}
+                        >
+                            {label}
+                        </motion.span>
+                    )}
+                </motion.div>
+            )}
         </NavLink>
     );
 };
@@ -90,22 +129,28 @@ export function Sidebar() {
                     link={"/"}
                 />
                 <SidebarLink
-                    icon={PieChart}
-                    label="Analytics"
+                    icon={ClipboardList}
+                    label="Notices"
                     isCollapsed={isCollapsed}
-                    link={"/analytics"}
+                    link={"/notice-board"}
                 />
                 <SidebarLink
-                    icon={Users}
-                    label="Customers"
+                    icon={LibraryBig}
+                    label="Syllabus"
                     isCollapsed={isCollapsed}
-                    link={"/customers"}
+                    link={"/syllabus"}
                 />
                 <SidebarLink
                     icon={BarChart3}
-                    label="Reports"
+                    label="Cirtificates"
                     isCollapsed={isCollapsed}
-                    link={"/reports"}
+                    link={"/cirtificates"}
+                />
+                <SidebarLink
+                    icon={Users}
+                    label="Meetings"
+                    isCollapsed={isCollapsed}
+                    link={"/meetings"}
                 />
                 <SidebarLink
                     icon={Calendar}
@@ -114,10 +159,10 @@ export function Sidebar() {
                     link={"/routines"}
                 />
                 <SidebarLink
-                    icon={MessageSquare}
-                    label="Meetings"
+                    icon={User}
+                    label="Members"
                     isCollapsed={isCollapsed}
-                    link={"/meetings"}
+                    link={"/members"}
                 />
 
                 <div
