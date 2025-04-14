@@ -10,6 +10,7 @@ import Layout from "./components/layout/Layout";
 import {
     Cirtificates,
     Dashboard,
+    Login,
     Meetings,
     Members,
     NotFound,
@@ -59,6 +60,7 @@ const App = () => (
                                     element={<Syllabus />}
                                 />
                             </Route>
+                            <Route path="/login" element={<Login />} />
                             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                             <Route path="*" element={<NotFound />} />
                         </Routes>
