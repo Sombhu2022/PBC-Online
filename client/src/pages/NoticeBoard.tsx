@@ -1,7 +1,6 @@
 import React from "react";
 
 import { Plus } from "lucide-react";
-import { Helmet } from "react-helmet";
 import { motion } from "framer-motion";
 
 import { Input } from "../components/ui/input";
@@ -35,9 +34,6 @@ const itemVariants = {
 const NoticeBoard = () => {
     return (
         <>
-            <Helmet>
-                <title>Notice | PBC Online</title>
-            </Helmet>
             <div className="p-6 flex-col flex gap-4">
                 <motion.div
                     className="flex flex-row items-center justify-between pb-2"
