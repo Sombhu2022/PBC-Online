@@ -38,4 +38,4 @@ const meetingSchema = new Schema({
     }
 
 }, { timestamps: true })
-export const Metting = model('metting', meetingSchema)
+export const Mettings = model('metting', meetingSchema)

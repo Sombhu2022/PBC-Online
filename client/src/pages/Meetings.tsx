@@ -45,8 +45,8 @@ const meetingDetails = [
 const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0 },
-  };
-  
+};
+
 const containerVariants = {
     hidden: {},
     show: {
@@ -63,8 +63,14 @@ const Meetings = () => {
         <>
             <div className=" h-[2.7rem] pr-8 flex justify-end items-end">
                 <Dialog>
-                    <DialogTrigger className="h-full rounded-lg bg-indigo-400 w-[7rem] flex justify-center items-center">
-                        <CalendarPlus className="text-[5px] p-[2px]" />
+                    <DialogTrigger>
+                        <Button
+                            variant="outline"
+                            className="flex flex-row items-center justify-center"
+                        >
+                            <CalendarPlus className="text-[5px] p-[2px]" />
+                            <span>Organize meeting</span>
+                        </Button>
                     </DialogTrigger>
                     <DialogContent>
                         <DialogHeader>
@@ -138,7 +144,6 @@ const Meetings = () => {
                 </Dialog>
             </div>
             <motion.div
-                // className="flex flex-col "
                 variants={containerVariants}
                 initial="hidden"
                 animate="show"

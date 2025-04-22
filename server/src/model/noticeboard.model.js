@@ -1,6 +1,6 @@
 import {model,Schema } from 'mongoose'
 
-const notificationSchema =new Schema({
+const noticeboardSchema =new Schema({
 
     title : {
         type : String,
@@ -45,4 +45,4 @@ const notificationSchema =new Schema({
 
 
 
-export const Notification = model('notification',notificationSchema)
+export const Noticeboard = model('noticeboard',noticeboardSchema)
