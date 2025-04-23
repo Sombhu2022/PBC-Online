@@ -21,6 +21,7 @@ import {
     Settings,
     Syllabus,
 } from "./pages";
+import AuthForm from "./pages/Login";
 
 // Create a client
 const queryClient = new QueryClient();

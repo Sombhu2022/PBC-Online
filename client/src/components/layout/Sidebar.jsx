@@ -15,6 +15,7 @@ import {
     ClipboardList,
     LibraryBig,
     User,
+    LogIn,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
@@ -177,10 +178,10 @@ export function Sidebar() {
                         link={"/settings"}
                     />
                     <SidebarLink
-                        icon={HelpCircle}
-                        label="Help"
+                        icon={LogIn}
+                        label="login"
                         isCollapsed={isCollapsed}
-                        link={"/help"}
+                        link={"/login"}
                     />
                 </div>
             </div>
