@@ -19,6 +19,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { PenIcon, Trash2, ScanEyeIcon, ArrowDownToLine } from "lucide-react";
+import { Input } from "../ui/input";
 
 const SyllabusContent = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -56,7 +57,7 @@ const SyllabusContent = () => {
         <>
             {/* Search Input */}
             <div className="mb-4 w-full">
-                <input
+                <Input
                     type="text"
                     placeholder="Search by paper code or name..."
                     value={searchTerm}
@@ -69,19 +70,33 @@ const SyllabusContent = () => {
                 <TableCaption>List of all syllabus papers</TableCaption>
                 <TableHeader>
                     <TableRow>
-                        <TableHead className="text-left pl-6">Semester</TableHead>
-                        <TableHead className="text-center">Paper Code</TableHead>
-                        <TableHead className="text-center">Paper Name</TableHead>
-                        <TableHead className="text-right pr-[120px]">Action</TableHead>
+                        <TableHead className="text-left pl-6">
+                            Semester
+                        </TableHead>
+                        <TableHead className="text-center">
+                            Paper Code
+                        </TableHead>
+                        <TableHead className="text-center">
+                            Paper Name
+                        </TableHead>
+                        <TableHead className="text-right pr-[120px]">
+                            Action
+                        </TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {filteredData.length > 0 ? (
                         filteredData.map((items, index) => (
                             <TableRow key={index}>
-                                <TableCell className="text-left pl-10">{items.semester}</TableCell>
-                                <TableCell className="text-center">{items.papercode}</TableCell>
-                                <TableCell className="text-center">{items.papername}</TableCell>
+                                <TableCell className="text-left pl-10">
+                                    {items.semester}
+                                </TableCell>
+                                <TableCell className="text-center">
+                                    {items.papercode}
+                                </TableCell>
+                                <TableCell className="text-center">
+                                    {items.papername}
+                                </TableCell>
                                 <TableCell className="text-left">
                                     <div className="w-full flex justify-end pr-5 gap-1">
                                         <Sheet>
@@ -91,13 +106,22 @@ const SyllabusContent = () => {
                                             <SheetContent>
                                                 <SheetHeader>
                                                     <SheetTitle className="h-20 w-full flex flex-col justify-center items-center">
-                                                        <span className="font-normal">{items.semester}</span>
-                                                        <span className="font-normal">{items.papercode}</span>
-                                                        <span className="font-normal">{items.papername}</span>
+                                                        <span className="font-normal">
+                                                            {items.semester}
+                                                        </span>
+                                                        <span className="font-normal">
+                                                            {items.papercode}
+                                                        </span>
+                                                        <span className="font-normal">
+                                                            {items.papername}
+                                                        </span>
                                                     </SheetTitle>
                                                     <SheetDescription>
-                                                        This is just a mock view section. You can customize this
-                                                        message depending on your feature.
+                                                        This is just a mock view
+                                                        section. You can
+                                                        customize this message
+                                                        depending on your
+                                                        feature.
                                                     </SheetDescription>
                                                 </SheetHeader>
                                             </SheetContent>
@@ -118,7 +142,10 @@ const SyllabusContent = () => {
                         ))
                     ) : (
                         <TableRow>
-                            <TableCell colSpan={4} className="text-center text-gray-400 italic">
+                            <TableCell
+                                colSpan={4}
+                                className="text-center text-gray-400 italic"
+                            >
                                 No matching syllabus found.
                             </TableCell>
                         </TableRow>
