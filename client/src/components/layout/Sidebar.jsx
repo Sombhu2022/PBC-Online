@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { useAppSelector } from "@/redux/hooks";
+import { useThemeStore } from "@/store";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -77,7 +77,8 @@ const SidebarLink = ({ icon: Icon, label, isCollapsed, link }) => {
 
 export function Sidebar() {
     const [isCollapsed, setIsCollapsed] = useState(false);
-    const { isDarkMode } = useAppSelector((state) => state.theme);
+    const { theme } = useThemeStore();
+    const isDarkMode = theme === 'dark';
 
     const toggleSidebar = () => {
         setIsCollapsed(!isCollapsed);

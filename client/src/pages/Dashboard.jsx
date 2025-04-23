@@ -9,16 +9,15 @@ import {
     SheetTrigger,
 } from "@/components/ui/sheet";
 
-
-import { useAppSelector } from "@/redux/hooks";
+import { useDashboardStore } from "@/store";
 import { DashboardContext } from "../components/dashboard/DashboardContent";
 
 export default function Dashboard() {
-    const { stats } = useAppSelector((state) => state.dashboard);
+    const { stats } = useDashboardStore();
 
     return (
         <>
-        <DashboardContext />
+            <DashboardContext />
         </>
     );
 }
