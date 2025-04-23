@@ -1,7 +1,6 @@
-
 import { useRef } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
-import { useAppSelector } from '@/redux/hooks';
+import { useThemeStore } from '@/store';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { motion } from 'framer-motion';
 
@@ -12,7 +11,8 @@ const generateUsersData = () => [
 ];
 
 export function UsersChart() {
-  const { isDarkMode } = useAppSelector(state => state.theme);
+  const { theme } = useThemeStore();
+  const isDarkMode = theme === 'dark';
   const data = useRef(generateUsersData());
   
   const COLORS = ['hsl(var(--primary))', 'hsl(var(--secondary))', 'hsl(var(--accent))'];

@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
-import { AwardIcon,Users2 } from "lucide-react";
+import { AwardIcon, Users2 } from "lucide-react";
 
-import { useAppSelector } from "@/redux/hooks";
+import { useDashboardStore } from "@/store";
 import {
     Table,
     TableBody,
@@ -33,7 +33,7 @@ export function DashboardContext() {
         hidden: { opacity: 0, y: -10 },
         visible: { opacity: 1, y: 0 },
     };
-    const { stats } = useAppSelector((state) => state.dashboard);
+    const { stats } = useDashboardStore();
 
     return (
         <>

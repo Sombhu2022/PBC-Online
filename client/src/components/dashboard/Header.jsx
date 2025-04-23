@@ -1,19 +1,17 @@
-
 // Creating this file since it's required in the Index.jsx but wasn't in the included files
 import { useCallback } from 'react';
 import { Button } from "@/components/ui/button";
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { toggleTheme } from '@/redux/themeSlice';
+import { useThemeStore, useDashboardStore } from '@/store';
 import { Moon, Sun, Bell, Search, User } from 'lucide-react';
 
 export function Header() {
-  const dispatch = useAppDispatch();
-  const { isDarkMode } = useAppSelector((state) => state.theme);
-  const { notifications } = useAppSelector((state) => state.dashboard);
+  const { theme, toggleTheme } = useThemeStore();
+  const { notifications } = useDashboardStore();
+  const isDarkMode = theme === 'dark';
   
   const handleToggleTheme = useCallback(() => {
-    dispatch(toggleTheme());
-  }, [dispatch]);
+    toggleTheme();
+  }, [toggleTheme]);
   
   const unreadCount = notifications.filter(n => !n.read).length;
   
