@@ -6,15 +6,17 @@ import { syllabusRouter } from "./src/routes/syllabus.routes.js"
 import { certificateRouter } from "./src/routes/certificate.routes.js"
 import { departmentRouter } from "./src/routes/department.routes.js"
 import { semesterRouter } from "./src/routes/semester.routes.js"
-import { userRouter } from "./src/routes/user.router.js"
 import { meetingRouter } from "./src/routes/meeting.routes.js"
 import { noticeboardRouter } from "./src/routes/noticeboard.routes.js"
+import { cloudinaryConfig } from "./src/config/cloudinary.config.js"
+import { userRouter } from "./src/routes/user.routes.js"
 
 
 
 const server = express()
 
 server.use(corsConfig)
+cloudinaryConfig()
 server.use(bodyParser.json({ limit: "50mb" }))
 server.use(express.json({ limit: "50mb" }))
 server.use(bodyParser.urlencoded({ limit: "50mb", extended: true }))

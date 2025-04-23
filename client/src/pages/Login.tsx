@@ -410,7 +410,7 @@ const Login = () => {
                 <Card
                   key={role.id}
                   className={`cursor-pointer transition-all hover:border-[#1163b6] hover:shadow-md ${
-                    selectedRole === role.id ? "border-[#1163b6] bg-blue-50" : ""
+                    selectedRole === role.id ? "border-[#1163b6]" : ""
                   }`}
                   onClick={() => handleRoleSelect(role.id)}
                 >

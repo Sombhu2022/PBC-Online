@@ -13,4 +13,4 @@ router
     .patch('/:departmentId',  isAuthenticate , authorizeRoles("admin") , validate(departmentValidation.update), departmentController.updateDepartment)
     .delete('/:departmentId', validate(departmentValidation.delete),  isAuthenticate , authorizeRoles("admin") , departmentController.deleteDepartment);
 
-export const departmentRouter = router;
+export const hodRouter = router;

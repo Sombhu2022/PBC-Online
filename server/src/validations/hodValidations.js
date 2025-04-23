@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-class DepartmentValidation {
+class HodValidations {
     
     // Create Department
     create = z.object({
@@ -71,4 +71,4 @@ class DepartmentValidation {
     });
 }
 
-export default new DepartmentValidation();
+export default new HodValidations();
