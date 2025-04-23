@@ -1,7 +1,12 @@
 import React from "react";
+import CertificateGenerator from "../components/cirtificates/CertificateGenerator";
 
 const Cirtificates = () => {
-    return <div>Cirtificates</div>;
+    return (
+        <div>
+            <CertificateGenerator />
+        </div>
+    );
 };
 
 export default Cirtificates;
