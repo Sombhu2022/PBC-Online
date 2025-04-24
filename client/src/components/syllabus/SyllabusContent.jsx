@@ -157,3 +157,116 @@ const SyllabusContent = () => {
 };
 
 export default SyllabusContent;
+
+//Different approach
+
+// import React, { useState } from "react";
+// import {
+//     Table,
+//     TableBody,
+//     TableCaption,
+//     TableCell,
+//     TableHead,
+//     TableHeader,
+//     TableRow,
+// } from "@/components/ui/table";
+// import {
+//     Sheet,
+//     SheetContent,
+//     SheetDescription,
+//     SheetHeader,
+//     SheetTitle,
+//     SheetTrigger,
+// } from "@/components/ui/sheet";
+// import { Button } from "@/components/ui/button";
+// import { PenIcon, Trash2, ScanEyeIcon } from "lucide-react";
+// import { Input } from "../ui/input";
+
+// const SyllabusContent = ({ syllabusList, setSyllabusList }) => {
+//     const [searchTerm, setSearchTerm] = useState("");
+
+//     const handleDelete = (index) => {
+//         const updated = [...syllabusList];
+//         updated.splice(index, 1);
+//         setSyllabusList(updated);
+//     };
+
+//     const filteredData = syllabusList.filter(
+//         (item) => 
+//             item.papercode.toLowerCase().includes(searchTerm.toLowerCase()) ||
+//             item.papername.toLowerCase().includes(searchTerm.toLowerCase())
+//     );
+
+
+//     return (
+//         <>
+//             <div className="mb-4 w-full px-8">
+//                 <Input
+//                     type="text"
+//                     placeholder="Search by paper code or name..."
+//                     value={searchTerm}
+//                     onChange={(e) => setSearchTerm(e.target.value)}
+//                 />
+//             </div>
+//             <Table>
+//                 <TableCaption>List of syllabus papers</TableCaption>
+//                 <TableHeader>
+//                     <TableRow>
+//                         <TableHead>Semester</TableHead>
+//                         <TableHead className="text-center">Paper Code</TableHead>
+//                         <TableHead className="text-center">Paper Name</TableHead>
+//                         <TableHead className="text-right">Action</TableHead>
+//                     </TableRow>
+//                 </TableHeader>
+//                 <TableBody>
+//                     {filteredData.length > 0 ? (
+//                         filteredData.map((item, index) => (
+//                             <TableRow key={index}>
+//                                 <TableCell>{item.semester}</TableCell>
+//                                 <TableCell className="text-center">{item.papercode}</TableCell>
+//                                 <TableCell className="text-center">{item.papername}</TableCell>
+//                                 <TableCell className="text-right">
+//                                     <div className="flex justify-end gap-2 pr-5">
+//                                         <Sheet>
+//                                             <SheetTrigger>
+//                                                 <ScanEyeIcon />
+//                                             </SheetTrigger>
+//                                             <SheetContent>
+//                                                 <SheetHeader>
+//                                                     <SheetTitle>
+//                                                         {item.papercode} - {item.papername}
+//                                                     </SheetTitle>
+//                                                     <SheetDescription>
+//                                                         Mock preview content
+//                                                     </SheetDescription>
+//                                                 </SheetHeader>
+//                                             </SheetContent>
+//                                         </Sheet>
+//                                         <Button variant="ghost">
+//                                             <PenIcon />
+//                                         </Button>
+//                                         <Button
+//                                             variant="ghost"
+//                                             onClick={() => handleDelete(index)}
+//                                         >
+//                                             <Trash2 />
+//                                         </Button>
+//                                     </div>
+//                                 </TableCell>
+//                             </TableRow>
+//                         ))
+//                     ) : (
+//                         <TableRow>
+//                             <TableCell colSpan={4} className="text-center text-gray-400 italic">
+//                                 No matching syllabus found.
+//                             </TableCell>
+//                         </TableRow>
+//                     )}
+//                 </TableBody>
+//             </Table>
+
+//         </>
+//     );
+// };
+
+// export default SyllabusContent;
