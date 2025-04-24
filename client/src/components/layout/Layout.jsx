@@ -1,8 +1,9 @@
-import React from "react";
-import { Outlet } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Navigate, Outlet } from "react-router-dom";
 import Footer from "./Footer";
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
+import { useAuthStore } from "../../store/authStore";
 
 function Layout() {
     return (

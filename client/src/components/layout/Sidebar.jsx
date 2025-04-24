@@ -78,7 +78,7 @@ const SidebarLink = ({ icon: Icon, label, isCollapsed, link }) => {
 export function Sidebar() {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const { theme } = useThemeStore();
-    const isDarkMode = theme === 'dark';
+    const isDarkMode = theme === "dark";
 
     const toggleSidebar = () => {
         setIsCollapsed(!isCollapsed);

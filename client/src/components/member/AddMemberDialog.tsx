@@ -18,21 +18,23 @@ import {
     SelectValue,
 } from "../ui/select";
 import { Label } from "../ui/label";
+import axiosInstance from "../../api/axiosInstance";
 
 const AddMemberDialog = () => {
-      const [isVisible, setIsVisible] = useState(false)
+    const [isVisible, setIsVisible] = useState(false);
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [role, setRole] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleAddMember = () => {
-        console.log("Member Added:", {
-            name,
+    const handleAddMember = async () => {
+        const response = await axiosInstance.post("/user/create", {
             email,
+            name,
             role,
             password,
         });
+        console.log(response);
 
         // Clear form
         setName("");
@@ -68,23 +70,23 @@ const AddMemberDialog = () => {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     />
-                   <div className="flex flex-col gap-y-2">
+                    <div className="flex flex-col gap-y-2">
                         <div className="border flex items-center rounded-md">
                             <Input
-                            id="password"
-                            type={isVisible ? "text" : "password"}
-                            placeholder="Password"
-                            className="border-0 outline-none"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                                id="password"
+                                type={isVisible ? "text" : "password"}
+                                placeholder="Password"
+                                className="border-0 outline-none"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
                             />
                             <Button
-                            type="button"
-                            className="bg-transparent"
-                            variant="ghost"
-                            onClick={() => setIsVisible(!isVisible)}
+                                type="button"
+                                className="bg-transparent"
+                                variant="ghost"
+                                onClick={() => setIsVisible(!isVisible)}
                             >
-                            {isVisible ? <Eye /> : <EyeClosed />}
+                                {isVisible ? <Eye /> : <EyeClosed />}
                             </Button>
                         </div>
                     </div>
