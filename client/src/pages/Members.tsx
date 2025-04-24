@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MemberHOD from "../components/member/MemberHOD";
 import MemberFaculty from "../components/member/MemberFaculty";
 import MemberStudent from "../components/member/MemberStudent";
@@ -14,6 +14,7 @@ import {
     SelectContent,
     SelectItem,
 } from "../components/ui/select";
+import { Navigate } from "react-router-dom";
 
 // Animation variants
 const containerVariants = {
@@ -56,7 +57,10 @@ const Members = () => {
             >
                 <h1 className="text-3xl font-bold">Members</h1>
                 <div className="flex items-center gap-4">
-                    <Select value={display} onValueChange={(val) => setDisplay(val)}>
+                    <Select
+                        value={display}
+                        onValueChange={(val) => setDisplay(val)}
+                    >
                         <SelectTrigger className="w-[160px]">
                             <SelectValue placeholder="Select Role" />
                         </SelectTrigger>
@@ -87,11 +91,6 @@ const Members = () => {
 };
 
 export default Members;
-
-
-
-
-
 
 // import React, { useState } from "react";
 // import MemberHOD from "../components/member/MemberHOD";
@@ -212,4 +211,3 @@ export default Members;
 // };
 
 // export default Members;
-
