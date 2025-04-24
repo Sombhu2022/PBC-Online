@@ -1,171 +1,180 @@
+import { sendEmail } from "../utils/sendMail.js";
+import { genarate6DigitOtp } from "../utils/OtpGenarate.js";
+import { fileDestroy, fileUploader } from "../utils/fileUpload.js";
+import { timeExpire } from "../utils/timeExpire.js";
+import { Users } from "../model/user.model.js";
 
-import { sendEmail } from "../utils/sendMail.js"
-import { genarate6DigitOtp } from "../utils/OtpGenarate.js"
-import { fileDestroy, fileUploader } from "../utils/fileUpload.js"
-import { timeExpire } from "../utils/timeExpire.js"
-import { Users } from "../model/user.model.js"
-
-import mongoose from "mongoose"
-import {  sendCookie } from "../utils/tokenGenarate.js"
-
+import mongoose from "mongoose";
+import { sendCookie } from "../utils/tokenGenarate.js";
 
 export const UserService = {
-
-  async createUser(userData , body , res) {
-    console.log("ok created account ");
-    if(userData.role === 'hod' && (body.role === 'hod' || body.role === "admin" )){
-      throw new Error("Access denied !")
-    }
-
-    // step1 : email exist or not 
-    const { email } = body
-    const isExist = await Users.findOne({ email })
-    if(isExist) { 
-      throw new Error("User alrady exist ")
-    }
-
-    const user = await Users.create(body)
-
-    const otp = genarate6DigitOtp()
-    user.otp = otp
-    user.otpExpiary = Date.now() + 5 * 60 * 1000 // OTP valid for 5 minutes
-
-    await user.save()
-
-    await sendEmail(
-      user.email,
-      `Welcome ${user.name} 🎉`,
-      `Thank you for joining <strong>PBC-Online</strong> – your trusted digital companion for academic growth and collaboration. <br><br>We're thrilled to have you on board! Whether you're a teacher, student, faculty member, or external learner, PBC-Online is here to support your journey with the right tools, resources, and community. <br><br>Start exploring and make the most of everything we offer. Let's grow together! 💡📚`
-    );
-    
-    await sendEmail(user.email, "Verify Account - OTP", otp)
-    sendCookie(user , res , "user create successfully" , 200)
-    return user
-  },
-
-  async verifyOtp(otp) {
-    const user = await Users.findOne({ otp , otpExpiary: { $gt: Date.now() } })    
-    if (!user) {
-      throw new Error("Invalid OTP")
-    }
-
-    user.otp = null
-    user.otpExpiary = null
-    user.isVerify = true
-    await user.save()
-    return user
-  },
-
-  async sendOtpForVerification(email) {
-    const user = await Users.findOne({ email })
-    if (!user) {
-      throw new Error("User not found")
-    }
-
-    const otp = genarate6DigitOtp()
-    user.otp = otp
-    user.otpExpiary = Date.now() + 5 * 60 * 1000 // OTP valid for 5 minutes
-    await user.save()
-    await sendEmail(email, "Verify Account - OTP", otp)
-  },
-
-  async loginUser(body , res) {
-    const {email , role , password } = body ;
-    const user = await Users.findOne({ email , role }).select("+password")
-    if (!user || !(await user.comparePassword(password))) {
-      throw new Error("Invalid email or password")
-    }
-    sendCookie(user , res , "user login successfully" , 200)
-  },
-
-  async getUserById(id) {
-    const user = await Users.aggregate([
-      {
-        $match: { _id: new mongoose.Types.ObjectId(id) } // Match the user by ID
-      },
-
-      {
-        $lookup: {
-          from: "users", // Collection name should match MongoDB collection (pluralized)
-          localField: "friends",
-          foreignField: "_id",
-          as: "friends",
+    async createUser(userData, body, res) {
+        console.log("ok created account ");
+        if (
+            userData.role === "hod" &&
+            (body.role === "hod" || body.role === "admin")
+        ) {
+            throw new Error("Access denied !");
         }
-      },
-      {
-        $lookup: {
-          from: "users",
-          localField: "friendsRequast", // Ensure the field name matches the schema
-          foreignField: "_id",
-          as: "friendRequests",
+
+        // step1 : email exist or not
+        const { email } = body;
+        const isExist = await Users.findOne({ email });
+        if (isExist) {
+            throw new Error("User alrady exist ");
         }
-      },
-      {
-        $lookup: {
-          from: "users",
-          localField: "sendFriendRequst",
-          foreignField: "_id",
-          as: "sentFriendRequests",
+
+        const user = await Users.create(body);
+
+        const otp = genarate6DigitOtp();
+        user.otp = otp;
+        user.otpExpiary = Date.now() + 5 * 60 * 1000; // OTP valid for 5 minutes
+
+        await user.save();
+
+        await sendEmail(
+            user.email,
+            `Welcome ${user.name} 🎉`,
+            `Thank you for joining <strong>PBC-Online</strong> – your trusted digital companion for academic growth and collaboration. <br><br>We're thrilled to have you on board! Whether you're a teacher, student, faculty member, or external learner, PBC-Online is here to support your journey with the right tools, resources, and community. <br><br>Start exploring and make the most of everything we offer. Let's grow together! 💡📚`
+        );
+
+        await sendEmail(user.email, "Verify Account - OTP", otp);
+        sendCookie(user, res, "user create successfully", 200);
+        return user;
+    },
+
+    async verifyOtp(otp) {
+        const user = await Users.findOne({
+            otp,
+            otpExpiary: { $gt: Date.now() },
+        });
+        if (!user) {
+            throw new Error("Invalid OTP");
         }
-      },
-      {
-        $project: {
-          name: 1,
-          email: 1,
-          profile_pic: 1,
-          totalFriends: { $size: "$friends" }, // Calculate total number of friends
-          friends: { _id:1 , name: 1, email: 1, profile_pic: 1 },
-          friendRequests: { _id:1 , name: 1, email: 1, profile_pic: 1 },
-          sentFriendRequests: {_id:1 , name: 1, email: 1, profile_pic: 1 }
+
+        user.otp = null;
+        user.otpExpiary = null;
+        user.isVerify = true;
+        await user.save();
+        return user;
+    },
+
+    async sendOtpForVerification(email) {
+        const user = await Users.findOne({ email });
+        if (!user) {
+            throw new Error("User not found");
         }
-      }
-    ]);
 
+        const otp = genarate6DigitOtp();
+        user.otp = otp;
+        user.otpExpiary = Date.now() + 5 * 60 * 1000; // OTP valid for 5 minutes
+        await user.save();
+        await sendEmail(email, "Verify Account - OTP", otp);
+    },
 
-  if (!user) throw new Error("User not found")
- console.log("user ========> " , user);
- 
-  return user 
-},
+    async loginUser(body, res) {
+        console.log(body);
 
-  async getAllUser(userId){
-    return await Users.find({_id : {$ne:userId}})
-  } , 
+        const { email, role, password } = body;
+        const user = await Users.findOne({ email: email, role: role }).select(
+            "+password"
+        );
+        console.log(user);
 
+        if (!user || !(await user.comparePassword(password))) {
+            throw new Error("Invalid email or password");
+        }
+        sendCookie(user, res, "user login successfully", 200);
+    },
 
+    async getUserById(id) {
+        const user = await Users.aggregate([
+            {
+                $match: { _id: new mongoose.Types.ObjectId(id) }, // Match the user by ID
+            },
 
-  async changeProfilePic(id, file) {
+            {
+                $lookup: {
+                    from: "users", // Collection name should match MongoDB collection (pluralized)
+                    localField: "friends",
+                    foreignField: "_id",
+                    as: "friends",
+                },
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "friendsRequast", // Ensure the field name matches the schema
+                    foreignField: "_id",
+                    as: "friendRequests",
+                },
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "sendFriendRequst",
+                    foreignField: "_id",
+                    as: "sentFriendRequests",
+                },
+            },
+            {
+                $project: {
+                    name: 1,
+                    email: 1,
+                    profile_pic: 1,
+                    totalFriends: { $size: "$friends" }, // Calculate total number of friends
+                    friends: { _id: 1, name: 1, email: 1, profile_pic: 1 },
+                    friendRequests: {
+                        _id: 1,
+                        name: 1,
+                        email: 1,
+                        profile_pic: 1,
+                    },
+                    sentFriendRequests: {
+                        _id: 1,
+                        name: 1,
+                        email: 1,
+                        profile_pic: 1,
+                    },
+                },
+            },
+        ]);
 
-    const user = await Users.findById(id)
-    if (!user) {
-      throw new Error("User not found")
-    }
+        if (!user) throw new Error("User not found");
+        console.log("user ========> ", user);
 
-    if (user.profile_pic?.public_id) {
-      await fileDestroy(user.profile_pic.public_id)
-    }
+        return user;
+    },
 
-    const { url, public_id, error } = await fileUploader(file)
-    if (error) {
-      throw new Error("File upload failed")
-    }
+    async getAllUser(userId) {
+        return await Users.find({ _id: { $ne: userId } });
+    },
 
-    user.profile_pic = { url, public_id }
-    await user.save()
-    return user
-  },
+    async changeProfilePic(id, file) {
+        const user = await Users.findById(id);
+        if (!user) {
+            throw new Error("User not found");
+        }
 
+        if (user.profile_pic?.public_id) {
+            await fileDestroy(user.profile_pic.public_id);
+        }
 
+        const { url, public_id, error } = await fileUploader(file);
+        if (error) {
+            throw new Error("File upload failed");
+        }
 
+        user.profile_pic = { url, public_id };
+        await user.save();
+        return user;
+    },
 
-  async deleteUser(id) {
-    return await Users.findByIdAndDelete(id)
-  },
+    async deleteUser(id) {
+        return await Users.findByIdAndDelete(id);
+    },
 
-  async updateUser(id, updateData) {
-    return await Users.findByIdAndUpdate(id, updateData, { new: true })
-  },
-
-  
-}
-
+    async updateUser(id, updateData) {
+        return await Users.findByIdAndUpdate(id, updateData, { new: true });
+    },
+};
