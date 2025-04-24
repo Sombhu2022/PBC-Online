@@ -16,19 +16,39 @@ import { Mail } from "lucide-react";
 
 const CertificateGenerator = () => {
     const [formData, setFormData] = useState({
-        examinerName: "Biswajit Laya",
+        examinerName: " Mr. Biswajit Laya",
         examinerDesignation: "SACT",
         examinerDept: "Computer Science",
         examinerCollege: "Kharagpur College",
         examinerAddress: "West Medinipur, 721305, West Bengal",
+        year: "2025",
         semester: "I",
+        degree : "UG",
         subject: "Computer Science",
         course: "COS-GE1P (OLD CBCS)",
-        dateOfExam: "16.03.2024",
+        dateOfExam: "01.04.2025",
         timeOfExam: "10.00 a.m. to 5.00 p.m.",
         numberOfStudents: "5 (Five)",
         numberOfExaminers: "2 (Two)",
     });
+
+    // Function to check if the semester is odd or even
+    const isOddSemester = (semester: string): boolean => {
+        const romanToInt: Record<string, number> = {
+            I: 1,
+            II: 2,
+            III: 3,
+            IV: 4,
+            V: 5,
+            VI: 6,
+            VII: 7,
+            VIII: 8,
+        };
+    
+        const semNum = romanToInt[semester.toUpperCase()] || 0;
+        return semNum % 2 === 1; // true = odd, false = even
+    };
+    
 
     const [email, setEmail] = useState("");
     const [isSending, setIsSending] = useState(false);
@@ -151,15 +171,66 @@ const CertificateGenerator = () => {
                                     onChange={handleChange}
                                 />
                             </div>
+                            <div className="space-y-2">
+                                <Label>Year</Label>
+                                <Input
+                                    name="year"
+                                    value={formData.year}
+                                    onChange={handleChange}
+                                />
+                            </div>
 
-                            <div className="grid grid-cols-3 gap-4">
+                            <div className="grid grid-cols-4 gap-4">
                                 <div className="space-y-2">
                                     <Label>Semester</Label>
-                                    <Input
+                                    {/* <Input
                                         name="semester"
                                         value={formData.semester}
                                         onChange={handleChange}
-                                    />
+                                    /> */}
+                                    <Select
+                                        value={formData.semester}
+                                        onValueChange={(value) =>
+                                            setFormData({
+                                                ...formData,
+                                                semester: value,
+                                            })
+                                        }
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select semester" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="I">I</SelectItem>
+                                            <SelectItem value="II">II</SelectItem>
+                                            <SelectItem value="III">III</SelectItem>
+                                            <SelectItem value="IV">IV</SelectItem>
+                                            <SelectItem value="V">V</SelectItem>
+                                            <SelectItem value="VI">VI</SelectItem>
+                                            <SelectItem value="VII">VII</SelectItem>
+                                            <SelectItem value="VIII">VIII</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Degree</Label>
+                                    <Select
+                                        value={formData.degree}
+                                        onValueChange={(value) =>
+                                            setFormData({
+                                                ...formData,
+                                                degree: value,
+                                            })
+                                        }
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select degree" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="UG">UG</SelectItem>
+                                            <SelectItem value="PG">PG</SelectItem>
+                                        </SelectContent>
+                                    </Select>
                                 </div>
                                 <div className="space-y-2">
                                     <Label>Subject</Label>
@@ -177,6 +248,7 @@ const CertificateGenerator = () => {
                                         onChange={handleChange}
                                     />
                                 </div>
+                            
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
@@ -326,9 +398,11 @@ const CertificateGenerator = () => {
                                     {formData.examinerCollege || "____"},{" "}
                                     {formData.examinerAddress || "____"}, has
                                     successfully conducted the End Semester
-                                    (Practical) Examination- 2023 (Odd Semester)
-                                    of Semester – {formData.semester || "____"},
-                                    UG, Subject- {formData.subject || "____"},
+                                    (Practical) Examination - {formData.year || "____"},{" "}
+                                    ({isOddSemester(formData.semester) ? "Odd Semester" : "Even Semester"})
+                                    of Semester – {formData.semester || "____"},{" "} 
+                                     {formData.degree || "____"},
+                                    Subject- {formData.subject || "____"},
                                     Course- {formData.course || "____"} on{" "}
                                     {formData.dateOfExam || "____"} (
                                     {formData.timeOfExam || "____"}) at this
