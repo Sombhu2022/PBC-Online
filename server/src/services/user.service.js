@@ -26,11 +26,11 @@ export const UserService = {
 
         const user = await Users.create(body);
 
-        const otp = genarate6DigitOtp();
-        user.otp = otp;
-        user.otpExpiary = Date.now() + 5 * 60 * 1000; // OTP valid for 5 minutes
+        // const otp = genarate6DigitOtp();
+        // user.otp = otp;
+        // user.otpExpiary = Date.now() + 5 * 60 * 1000; // OTP valid for 5 minutes
 
-        await user.save();
+        // await user.save();
 
         await sendEmail(
             user.email,
@@ -38,8 +38,8 @@ export const UserService = {
             `Thank you for joining <strong>PBC-Online</strong> – your trusted digital companion for academic growth and collaboration. <br><br>We're thrilled to have you on board! Whether you're a teacher, student, faculty member, or external learner, PBC-Online is here to support your journey with the right tools, resources, and community. <br><br>Start exploring and make the most of everything we offer. Let's grow together! 💡📚`
         );
 
-        await sendEmail(user.email, "Verify Account - OTP", otp);
-        sendCookie(user, res, "user create successfully", 200);
+        // await sendEmail(user.email, "Verify Account - OTP", otp);
+        // sendCookie(user, res, "user create successfully", 200);
         return user;
     },
 
@@ -73,7 +73,7 @@ export const UserService = {
     },
 
     async loginUser(body, res) {
-        console.log(body);
+        // console.log(body , "------------------------------------");
 
         const { email, role, password } = body;
         const user = await Users.findOne({ email: email, role: role }).select(
