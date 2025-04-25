@@ -68,7 +68,10 @@ export function Header() {
                 </Button>
 
                 <DropdownMenu>
-                    <DropdownMenuTrigger className="flex items-center justify-center">
+                    <DropdownMenuTrigger
+                        className="flex items-center justify-center"
+                        asChild
+                    >
                         <Button
                             variant="ghost"
                             size="icon"

@@ -52,7 +52,7 @@ const Login = () => {
             });
 
             const user = response.data?.data;
-            useAuthStore.getState().login(user);
+            useAuthStore.getState().login(user, response?.data?.token);
             console.log("Logged in:", user);
 
             navigate("/");

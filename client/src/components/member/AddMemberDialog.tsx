@@ -9,7 +9,7 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { Eye, EyeClosed, Plus } from "lucide-react";
+import { Eye, EyeClosed, Loader2, Plus } from "lucide-react";
 import {
     Select,
     SelectContent,
@@ -17,30 +17,53 @@ import {
     SelectTrigger,
     SelectValue,
 } from "../ui/select";
-import { Label } from "../ui/label";
 import axiosInstance from "../../api/axiosInstance";
+import { useAuthStore } from "../../store/authStore";
 
 const AddMemberDialog = () => {
     const [isVisible, setIsVisible] = useState(false);
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
+    const [mobile, setMobile] = useState("");
     const [role, setRole] = useState("");
+    const [dept, setDept] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleAddMember = async () => {
-        const response = await axiosInstance.post("/user/create", {
-            email,
-            name,
-            role,
-            password,
-        });
-        console.log(response);
+    const [loading, setLoading] = useState(false);
 
-        // Clear form
-        setName("");
-        setEmail("");
-        setRole("");
-        setPassword("");
+    const { token } = useAuthStore();
+
+    const handleAddMember = async () => {
+        try {
+            setLoading(true);
+            const response = await axiosInstance.post(
+                "/user/create",
+                {
+                    email,
+                    name,
+                    role,
+                    password,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            console.log(response);
+
+            // Clear form
+            setName("");
+            setEmail("");
+            setMobile("");
+            setRole("");
+            setPassword("");
+        } catch (error) {
+            console.log(error);
+            alert(error.message);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -70,6 +93,12 @@ const AddMemberDialog = () => {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     />
+                    <Input
+                        type="number"
+                        placeholder="Mobile no"
+                        value={mobile}
+                        onChange={(e) => setMobile(e.target.value)}
+                    />
                     <div className="flex flex-col gap-y-2">
                         <div className="border flex items-center rounded-md">
                             <Input
@@ -90,6 +119,24 @@ const AddMemberDialog = () => {
                             </Button>
                         </div>
                     </div>
+                    {/* Dept select  */}
+                    <Select
+                        value={dept}
+                        onValueChange={(value) => setDept(value)}
+                    >
+                        <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select Depertment" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="hod">
+                                Computer Science
+                            </SelectItem>
+                            <SelectItem value="faculty">BCA</SelectItem>
+                            <SelectItem value="external">Geography</SelectItem>
+                            <SelectItem value="student">Student</SelectItem>
+                        </SelectContent>
+                    </Select>
+
                     {/* Role selection */}
                     <Select
                         value={role}
@@ -106,8 +153,16 @@ const AddMemberDialog = () => {
                         </SelectContent>
                     </Select>
 
-                    <Button onClick={handleAddMember} className="w-full">
-                        Save Member
+                    <Button
+                        onClick={handleAddMember}
+                        className="w-full"
+                        disabled={loading}
+                    >
+                        {loading ? (
+                            <Loader2 className="animate-spin" />
+                        ) : (
+                            "Save Member"
+                        )}
                     </Button>
                 </div>
             </DialogContent>
