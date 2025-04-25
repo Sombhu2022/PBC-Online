@@ -13,6 +13,7 @@ import {
     Eye,
     EyeClosed,
     GraduationCap,
+    Loader2,
     UserCog,
     UserPlus,
     Users,
@@ -20,14 +21,21 @@ import {
 import { Card, CardContent } from "../components/ui/card";
 import axiosInstance from "../api/axiosInstance";
 import { useAuthStore } from "../store/authStore";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Login = () => {
     const [isVisible, setIsVisible] = useState(false);
     const [activeTab, setActiveTab] = useState("role");
     const [selectedRole, setSelectedRole] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
+
+    const { isAuthenticated } = useAuthStore();
+
+    if (isAuthenticated) {
+        return <Navigate to={"/"} replace />;
+    }
 
     const [loginForm, setLoginForm] = useState({
         email: "",
@@ -45,6 +53,7 @@ const Login = () => {
         }
 
         try {
+            setLoading(true);
             const response = await axiosInstance.post("/user/login", {
                 email,
                 role: selectedRole,
@@ -62,6 +71,8 @@ const Login = () => {
                 error.response?.data || error.message
             );
             alert("Login failed. Please check your credentials.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -220,8 +231,16 @@ const Login = () => {
                                 <Button
                                     type="submit"
                                     className="w-1/2 bg-[#1163b6] hover:bg-[#1164b6a1]"
+                                    disabled={loading}
                                 >
-                                    Login
+                                    {loading ? (
+                                        <Loader2
+                                            className="animate-spin"
+                                            size={20}
+                                        />
+                                    ) : (
+                                        "Login"
+                                    )}
                                 </Button>
                             </div>
                         </form>

@@ -13,6 +13,7 @@ import {
 } from "../components/ui/select";
 import axiosInstance from "../api/axiosInstance";
 import { useAuthStore } from "../store/authStore";
+import { Loader, Loader2 } from "lucide-react";
 
 // Animation variants
 const containerVariants = {
@@ -91,16 +92,22 @@ const Members = () => {
             </motion.div>
 
             {/* Content */}
-            <motion.div
-                className="px-8"
-                variants={containerVariants}
-                initial="hidden"
-                animate="show"
-            >
-                <motion.div variants={itemVariants}>
-                    <MemberList data={data} />
+            {loading ? (
+                <div className="w-full h-96 flex items-center justify-center">
+                    <Loader2 size={40} className="animate-spin" />
+                </div>
+            ) : (
+                <motion.div
+                    className="px-8"
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="show"
+                >
+                    <motion.div variants={itemVariants}>
+                        <MemberList data={data} />
+                    </motion.div>
                 </motion.div>
-            </motion.div>
+            )}
         </>
     );
 };

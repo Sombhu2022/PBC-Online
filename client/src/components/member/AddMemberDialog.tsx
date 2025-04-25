@@ -31,25 +31,17 @@ const AddMemberDialog = () => {
 
     const [loading, setLoading] = useState(false);
 
-    const { token } = useAuthStore();
+    // const { token } = useAuthStore();
 
     const handleAddMember = async () => {
         try {
             setLoading(true);
-            const response = await axiosInstance.post(
-                "/user/create",
-                {
-                    email,
-                    name,
-                    role,
-                    password,
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            const response = await axiosInstance.post("/user/create", {
+                email,
+                name,
+                role,
+                password,
+            });
             console.log(response);
 
             // Clear form
