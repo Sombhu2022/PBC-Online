@@ -5,7 +5,8 @@ interface AuthState {
     user: Record<string, any> | null;
     role: string | null;
     isAuthenticated: boolean;
-    login: (user: Record<string, any>) => void;
+    token: string | null;
+    login: (user: Record<string, any>, token: string) => void;
     logout: () => void;
 }
 
@@ -15,11 +16,13 @@ export const useAuthStore = create<AuthState>()(
             user: null,
             role: null,
             isAuthenticated: false,
-            login: (user) =>
+            token: null,
+            login: (user, token) =>
                 set({
                     user,
                     role: user.role,
                     isAuthenticated: true,
+                    token: token,
                 }),
             logout: () =>
                 set({
