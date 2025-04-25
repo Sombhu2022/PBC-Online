@@ -1,8 +1,8 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { useThemeStore } from "@/store";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { useThemeStore } from "../../store";
+import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
 import {
     Home,
     ChevronLeft,
@@ -18,6 +18,7 @@ import {
     LogIn,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { useAuthStore } from "../../store/authStore";
 
 const SidebarLink = ({ icon: Icon, label, isCollapsed, link }) => {
     return (
@@ -79,6 +80,8 @@ export function Sidebar() {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const { theme } = useThemeStore();
     const isDarkMode = theme === "dark";
+
+    const { logout, isAuthenticated } = useAuthStore();
 
     const toggleSidebar = () => {
         setIsCollapsed(!isCollapsed);
@@ -167,24 +170,24 @@ export function Sidebar() {
                     link={"/members"}
                 />
 
-                <div
-                    className={`mt-auto flex flex-col gap-1 ${
-                        isCollapsed ? "" : "pt-4"
-                    }`}
-                >
-                    <SidebarLink
-                        icon={Settings}
-                        label="Settings"
-                        isCollapsed={isCollapsed}
-                        link={"/settings"}
-                    />
-                    <SidebarLink
-                        icon={LogIn}
-                        label="login"
-                        isCollapsed={isCollapsed}
-                        link={"/login"}
-                    />
-                </div>
+                {isAuthenticated && (
+                    <div
+                        className={`mt-auto flex flex-col gap-1 ${
+                            isCollapsed ? "" : "pt-4"
+                        }`}
+                    >
+                        <div className="w-full h-10">
+                            <Button
+                                variant="destructive"
+                                className="w-full text-base flex flex-row items-center justify-center"
+                                onClick={logout}
+                            >
+                                <LogIn />
+                                {!isCollapsed && "Logout"}
+                            </Button>
+                        </div>
+                    </div>
+                )}
             </div>
         </motion.div>
     );
