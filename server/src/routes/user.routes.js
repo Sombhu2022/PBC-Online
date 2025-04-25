@@ -21,8 +21,8 @@ router
     .post(
         "/create",
         validate(userValidation.createUser),
-        isAuthenticate,
-        authorizeRoles("admin", "hod"),
+        // isAuthenticate,
+        // authorizeRoles("admin", "hod"),
         createUser
     )
     .post("/login", validate(userValidation.login), logInUser)

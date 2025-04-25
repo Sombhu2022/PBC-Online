@@ -9,6 +9,12 @@ export const createUser = async (req, res) => {
             role: "admin",
         };
         const user = await UserService.createUser(req.user, req.body, res);
+        sendResponse(res, {
+            status: HTTP_STATUS.OK,
+            success: true,
+            message: "User Creation success.",
+            data: user,
+        });
     } catch (error) {
         console.error(error);
         sendResponse(res, {
@@ -51,6 +57,8 @@ export const VerifyOtpWithExpiry = async (req, res) => {
 
 export const logInUser = async (req, res) => {
     try {
+        // console.log("----" , req.body);
+        
         const result = await UserService.loginUser(req.body, res);
         // if (result.requiresTwoStep) {
         //   return sendResponse(res, { status: HTTP_STATUS.OK, success: true, message: "Verification code sent to your email" });
