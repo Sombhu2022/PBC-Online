@@ -28,13 +28,24 @@ import {
 import { Plus } from "lucide-react";
 import RoutineBox from "../components/routine/RoutineBox";
 import AddRoutineDialog from "../components/routine/AddroutineDialogue";
+import { useAuthStore } from "../store/authStore";
+import { motion } from "framer-motion";
 
 const Routines = () => {
+    const role: string | null = useAuthStore((state) => state.role);
+    // const role: string | null = 'student';
+
     const [semester, setSemester] = useState<string>("first");
 
     return (
         <section className="container flex flex-col gap-4">
-            <header className="flex flex-row items-center justify-between">
+            {/* Animate the header */}
+            <motion.div
+                className="flex flex-row items-center justify-between"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+            >
                 <div>
                     <h1 className="text-2xl font-semibold">Routines</h1>
                     <p>Department</p>
@@ -58,12 +69,18 @@ const Routines = () => {
                             <SelectItem value="eighth">8th Sem</SelectItem>
                         </SelectContent>
                     </Select>
-                    <AddRoutineDialog />
+                    {(role === "admin" || role === "hod") && <AddRoutineDialog />}
                 </div>
-            </header>
-            <div>
+            </motion.div>
+
+            {/* Animate the RoutineBox container */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+            >
                 <RoutineBox sem={semester} />
-            </div>
+            </motion.div>
         </section>
     );
 };

@@ -44,6 +44,8 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { CalendarPlus } from "lucide-react";
 import { DatePickerDemo } from "@/components/layout/DatePicker";
+import { useAuthStore } from "../../store/authStore";
+
 const MeetingContent = ({
     title,
     description,
@@ -52,6 +54,9 @@ const MeetingContent = ({
     participants,
     location,
 }) => {
+    // const role: string | null = useAuthStore((state) => state.role);
+    // const role: string | null = 'student';
+    
     const [meetingData, setMeetingData] = useState({
         title: title,
         description: description,
@@ -99,8 +104,9 @@ const MeetingContent = ({
                             <CardDescription className="text-sm text-gray-500 mt-1"></CardDescription>
                         </div>
                         <div className="flex w-fit gap-3">
-                            <Dialog>
-                                <DialogTrigger className="justify-around items-center px-4 py-2 text-sm bg-red-500 text-white rounded-md hover:bg-red-700 transition  flex gap-2">
+                            {/* { (role === "admin" || role === "hod") &&( */}
+                                <Dialog>
+                                <DialogTrigger className="justify-around items-center px-4 py-2 text-sm bg-red-500 text-white rounded-md hover:bg-red-700 transition  flex gap-2" asChildren> 
                                     Delete
                                     <Trash2 className="p-1" />
                                 </DialogTrigger>
@@ -117,8 +123,10 @@ const MeetingContent = ({
                                         </DialogDescription>
                                     </DialogHeader>
                                 </DialogContent>
-                            </Dialog>
-
+                                </Dialog>
+                            {/* )} */}
+                            
+                            {/* { (role === "admin" || role === "hod") &&( */}
                             <Dialog>
                                 <DialogTrigger className="justify-around items-center px-4 py-2 text-sm bg-[#28449ede] text-white rounded-md hover:bg-[#28439e] transition  flex gap-2">
                                     Edit <FilePenLine className="p-1" />
@@ -212,6 +220,7 @@ const MeetingContent = ({
                                     </DialogHeader>
                                 </DialogContent>
                             </Dialog>
+                             {/* )} */}
                             <Sheet>
                                 <SheetTrigger className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
                                     View Details /Notify
@@ -240,7 +249,6 @@ const MeetingContent = ({
                 </CardContent>
 
                 <CardFooter className="flex justify-around px-6 py-[10px]rounded-b-2xl  ">
-                    {/**  h-[3rem] */}
                     <div className="flex flex-col items-center gap-[3px]">
                         <Calendar className="w-4 h-4  " />
                         <div className=" flex   gap-2 items-center">
