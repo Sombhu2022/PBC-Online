@@ -7,7 +7,8 @@ const facultySchema = new Schema({
     user : {
         type : Schema.Types.ObjectId,
         ref : 'user',
-        required : true
+        required : true,
+        unique : true
     },
     department : {
         type : Schema.Types.ObjectId,

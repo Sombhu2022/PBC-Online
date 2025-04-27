@@ -6,8 +6,15 @@ const externalSchema =new Schema({
 
         type : Schema.Types.ObjectId,
         ref : 'user',
-        required : true
+        required : true,
+        unique : true
     },
+    creator:{
+        
+        type : Schema.Types.ObjectId,
+        ref : 'user',
+        required : true
+    } ,
     department : {
         type : Schema.Types.ObjectId,
         ref : 'department',
@@ -38,6 +45,9 @@ const externalSchema =new Schema({
 
     },
     doe : {
+        type : Date,
+        required : [true ,'date of exam is required!!'],
+        trim : true
 
     }
 

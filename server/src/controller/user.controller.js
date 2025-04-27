@@ -6,9 +6,6 @@ import { Users } from "../model/user.model.js";
 
 export const createUser = async (req, res) => {
     try {
-        req.user = {
-            role: "admin",
-        };
         const user = await UserService.createUser(req.user, req.body, res);
         sendResponse(res, {
             status: HTTP_STATUS.OK,
@@ -27,6 +24,43 @@ export const createUser = async (req, res) => {
     }
 };
 
+
+export const registerStudent = async (req, res) => {
+    try {
+        const user = await UserService.createStudent( req.body, res);
+        sendResponse(res, {
+            status: HTTP_STATUS.OK,
+            success: true,
+            message: "User Creation success.",
+            data: user,
+        });
+    } catch (error) {
+        console.error(error);
+        sendResponse(res, {
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            success: false,
+            message: RESPONSE_MESSAGES.INTERNAL_ERROR,
+            error,
+        });
+    }
+};
+
+
+export const verifyUser = async (req, res) => {
+    try {
+         await UserService.verifyOptWithCookieSet( req.body , res);
+    } catch (error) {
+        console.error(error);
+        sendResponse(res, {
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            success: false,
+            message: RESPONSE_MESSAGES.INTERNAL_ERROR,
+            error,
+        });
+    }
+};
+
+
 export const sendOtpForVerifyAccount = async (req, res) => {
     try {
         await UserService.sendOtpForVerification(req.body.email);
@@ -34,6 +68,40 @@ export const sendOtpForVerifyAccount = async (req, res) => {
             status: HTTP_STATUS.OK,
             success: true,
             message: "OTP sent successfully.",
+        });
+    } catch (error) {
+        sendResponse(res, {
+            status: HTTP_STATUS.BAD_REQUEST,
+            success: false,
+            message: error.message,
+        });
+    }
+};
+
+export const changePasswordWithOldPassword = async (req, res) => {
+    try {
+        await UserService.sendOtpForVerification( req.user , req.body);
+        sendResponse(res, {
+            status: HTTP_STATUS.OK,
+            success: true,
+            message: "Password update successfully.",
+        });
+    } catch (error) {
+        sendResponse(res, {
+            status: HTTP_STATUS.BAD_REQUEST,
+            success: false,
+            message: error.message,
+        });
+    }
+};
+
+export const forgotPassword = async (req, res) => {
+    try {
+        await UserService.forgotPassword(req.body);
+        sendResponse(res, {
+            status: HTTP_STATUS.OK,
+            success: true,
+            message: "Password update successfully.",
         });
     } catch (error) {
         sendResponse(res, {
@@ -61,9 +129,10 @@ export const logInUser = async (req, res) => {
         // console.log("----" , req.body);
         
         const result = await UserService.loginUser(req.body, res);
-        // if (result.requiresTwoStep) {
-        //   return sendResponse(res, { status: HTTP_STATUS.OK, success: true, message: "Verification code sent to your email" });
-        // }
+        if (result.verifyRequest) {
+          return sendResponse(res, { status: HTTP_STATUS.OK, success: true, data: result , message: "Verification code sent to your email" });
+        }
+
     } catch (error) {
         sendResponse(res, {
             status: HTTP_STATUS.BAD_REQUEST,

@@ -14,14 +14,7 @@
 import jwt from "jsonwebtoken";
 
 export const sendCookie = (user, res, message, statusCode = 200) => {
-    console.log(
-        "---------------------",
-        user,
-        message,
-        statusCode,
-        "-------------------->"
-    );
-
+  
     // Generate JWT token
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
         expiresIn: "30d",
@@ -36,6 +29,9 @@ export const sendCookie = (user, res, message, statusCode = 200) => {
         path: "/", // Accessible from all paths
     };
 
+    // console.log("all ok this is run ");
+    
+
     // Set the cookie and send the response
     return res
         .status(statusCode)
@@ -44,6 +40,5 @@ export const sendCookie = (user, res, message, statusCode = 200) => {
             success: true,
             message,
             data: user,
-            token: token,
         });
 };
