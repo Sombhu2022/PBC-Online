@@ -32,7 +32,7 @@ class UserValidation {
 
     verifyOtp = z.object({
         body: z.object({
-            otp: z.string().length(6, "OTP must be 6 digits"),
+            otp: z.number().min(6, "OTP must be 6 digits"),
         }),
     });
 
@@ -79,7 +79,7 @@ class UserValidation {
 
     changePasswordWithOtp = z.object({
         body: z.object({
-            otp: z.string().length(6, "OTP must be 6 digits"),
+            otp: z.number().min(6, "OTP must be 6 digits"),
             password: z
                 .string()
                 .min(8, "Password must be at least 8 characters"),
@@ -95,19 +95,7 @@ class UserValidation {
         }),
     });
 
-    sendFriendRequest = z.object({
-        body: z.object({
-            requastId: z.string().min(1, "request Id is must  be required "),
-        }),
-    });
-    manageFriendRequest = z.object({
-        body: z.object({
-            requestId: z.string().min(1, "Request ID is required"),
-            action: z.enum(["accept", "reject"], {
-                errorMap: () => ({ message: "Invalid action" }),
-            }),
-        }),
-    });
+   
 }
 
 export default new UserValidation();
