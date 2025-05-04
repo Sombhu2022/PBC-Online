@@ -1,5 +1,4 @@
 import React from "react";
-
 import {
     Sheet,
     SheetContent,
@@ -8,7 +7,6 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "../../components/ui/sheet";
-
 import { Button } from "../../components/ui/button";
 import { DownloadCloud, Edit3, Eye, Trash2 } from "lucide-react";
 import {
@@ -19,31 +17,25 @@ import {
     CardHeader,
     CardTitle,
 } from "../../components/ui/card";
+import { useAuthStore } from "../../store/authStore";
 
-type Props = {};
+const NoticeContent = ({ notice }) => {
+    const role = useAuthStore((state) => state.role);
 
-const NoticeContent = (props: Props) => {
+   
+
     return (
-        <Card className="flex-row flex items-start justify-between shadow-sm">
+        <Card className="flex flex-row items-start justify-between shadow-sm">
             <div className="w-full">
                 <CardHeader>
-                    <CardTitle>Card Title</CardTitle>
+                    <CardTitle>{notice.title}</CardTitle>
                     <CardDescription className="text-justify line-clamp-3">
-                        Lorem ipsum dolor, sit amet consectetur adipisicing
-                        elit. Ad laboriosam, ipsam libero reprehenderit facilis
-                        assumenda nesciunt molestias, tempore optio numquam
-                        asperiores ea iusto repellat sequi, enim facere ipsa
-                        doloremque voluptatum quod ipsum! Tempore pariatur
-                        delectus accusantium soluta ipsam vitae. Numquam placeat
-                        culpa ipsum eaque doloremque ducimus fugit doloribus
-                        illo laboriosam nobis officia eos, libero totam alias
-                        unde possimus iusto nam eveniet. Earum minima eum quam
-                        nemo maxime ex? Adipisci odio voluptatum earum molestiae
-                        deleniti blanditiis pariatur tempore, sed optio itaque?
+                        {notice.description}
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <p>Card Content</p>
+                    <p>Posted on: {new Date(notice.createdAt).toLocaleDateString()}</p>
+                    {notice.media && notice.media.length > 0 && <p>Media: Available</p>}
                 </CardContent>
             </div>
             <CardFooter className="py-3 px-3 flex-col gap-3">
@@ -58,11 +50,33 @@ const NoticeContent = (props: Props) => {
                     </SheetTrigger>
                     <SheetContent>
                         <SheetHeader>
-                            <SheetTitle>Are you absolutely sure?</SheetTitle>
+                            <SheetTitle>{notice.title}</SheetTitle>
                             <SheetDescription>
-                                This action cannot be undone. This will
-                                permanently delete your account and remove your
-                                data from our servers.
+                                <p>{notice.description}</p>
+                                {notice.media && notice.media.length > 0 && (
+                                    <div className="mt-4">
+                                        <p>Media:</p>
+                                        {notice.media[0].url ? (
+                                            <img
+                                                src={notice.media[0].url}
+                                                alt="Notice Media"
+                                                className="mt-2 max-w-full h-auto"
+                                            />
+                                        ) : (
+                                            <a
+                                                href={notice.media[0].url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-blue-600 underline"
+                                            >
+                                                View PDF
+                                            </a>
+                                        )}
+                                    </div>
+                                )}
+                                <p className="mt-4">
+                                    Posted on: {new Date(notice.createdAt).toLocaleDateString()}
+                                </p>
                             </SheetDescription>
                         </SheetHeader>
                     </SheetContent>
@@ -70,21 +84,29 @@ const NoticeContent = (props: Props) => {
                 <Button
                     variant={"outline"}
                     className="border-green-600 dark:border-green-500 rounded-full"
+                  
                 >
                     <DownloadCloud />
                 </Button>
-                <Button
-                    variant={"outline"}
-                    className="border-green-600 dark:border-green-500 rounded-full"
-                >
-                    <Edit3 />
-                </Button>
-                <Button
-                    variant={"destructive"}
-                    className="border-red-600 dark:border-red-500 rounded-full"
-                >
-                    <Trash2 />
-                </Button>
+                {(role === "admin" || role === "hod") && (
+                    <>
+                    <Button
+                        variant={"destructive"}
+                        className="border-red-600 dark:border-red-500 rounded-full"
+                        
+                    >
+                       
+                      <Edit3 />
+                    </Button>
+                        <Button
+                            variant={"destructive"}
+                            className="border-red-600 dark:border-red-500 rounded-full"
+                            
+                        >
+                            <Trash2 />
+                        </Button>
+                    </>
+                )}
             </CardFooter>
         </Card>
     );
