@@ -2,6 +2,7 @@ import { UserService } from "../services/user.service.js";
 import { HTTP_STATUS } from "../constants/statusCode.constants.js";
 import { RESPONSE_MESSAGES } from "../constants/responseMessage.constants.js";
 import { sendResponse } from "../utils/response.handler.js";
+import { Users } from "../model/user.model.js";
 
 export const createUser = async (req, res) => {
     try {
@@ -9,6 +10,12 @@ export const createUser = async (req, res) => {
             role: "admin",
         };
         const user = await UserService.createUser(req.user, req.body, res);
+        sendResponse(res, {
+            status: HTTP_STATUS.OK,
+            success: true,
+            message: "User Creation success.",
+            data: user,
+        });
     } catch (error) {
         console.error(error);
         sendResponse(res, {
@@ -51,6 +58,8 @@ export const VerifyOtpWithExpiry = async (req, res) => {
 
 export const logInUser = async (req, res) => {
     try {
+        // console.log("----" , req.body);
+        
         const result = await UserService.loginUser(req.body, res);
         // if (result.requiresTwoStep) {
         //   return sendResponse(res, { status: HTTP_STATUS.OK, success: true, message: "Verification code sent to your email" });
@@ -138,6 +147,25 @@ export const updateUser = async (req, res) => {
             status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
             success: false,
             message: "Failed to update user.",
+            error,
+        });
+    }
+};
+
+export const getAllUser = async (req, res) => {
+    try {
+        const user = await Users.find({ role: req.body.role });
+        sendResponse(res, {
+            status: HTTP_STATUS.OK,
+            success: true,
+            message: "User fetched successfully.",
+            data: user,
+        });
+    } catch (error) {
+        sendResponse(res, {
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            success: false,
+            message: error.message,
             error,
         });
     }

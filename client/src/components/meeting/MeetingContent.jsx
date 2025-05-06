@@ -54,8 +54,8 @@ const MeetingContent = ({
     participants,
     location,
 }) => {
-    // const role: string | null = useAuthStore((state) => state.role);
-    // const role: string | null = 'student';
+    const role = useAuthStore((state) => state.role);
+    // const role = 'student';
     
     const [meetingData, setMeetingData] = useState({
         title: title,
@@ -104,7 +104,7 @@ const MeetingContent = ({
                             <CardDescription className="text-sm text-gray-500 mt-1"></CardDescription>
                         </div>
                         <div className="flex w-fit gap-3">
-                            {/* { (role === "admin" || role === "hod") &&( */}
+                            { (role === "admin" || role === "hod") &&(
                                 <Dialog>
                                 <DialogTrigger className="justify-around items-center px-4 py-2 text-sm bg-red-500 text-white rounded-md hover:bg-red-700 transition  flex gap-2" asChildren> 
                                     Delete
@@ -124,9 +124,9 @@ const MeetingContent = ({
                                     </DialogHeader>
                                 </DialogContent>
                                 </Dialog>
-                            {/* )} */}
+                             )} 
                             
-                            {/* { (role === "admin" || role === "hod") &&( */}
+                            { (role === "admin" || role === "hod") &&(
                             <Dialog>
                                 <DialogTrigger className="justify-around items-center px-4 py-2 text-sm bg-[#28449ede] text-white rounded-md hover:bg-[#28439e] transition  flex gap-2">
                                     Edit <FilePenLine className="p-1" />
@@ -220,7 +220,7 @@ const MeetingContent = ({
                                     </DialogHeader>
                                 </DialogContent>
                             </Dialog>
-                             {/* )} */}
+                             )} 
                             <Sheet>
                                 <SheetTrigger className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
                                     View Details /Notify

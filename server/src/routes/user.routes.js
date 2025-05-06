@@ -4,6 +4,7 @@ import { validate } from "../middlewares/validate.middleware.js";
 import {
     createUser,
     deleteUser,
+    getAllUser,
     logInUser,
     sendOtpForVerifyAccount,
     updateUser,
@@ -21,8 +22,8 @@ router
     .post(
         "/create",
         validate(userValidation.createUser),
-        isAuthenticate,
-        authorizeRoles("admin", "hod"),
+        // isAuthenticate,
+        // authorizeRoles("admin", "hod"),
         createUser
     )
     .post("/login", validate(userValidation.login), logInUser)
@@ -42,6 +43,7 @@ router
         isAuthenticate
     )
     .patch("/", isAuthenticate, updateUser)
-    .delete("/", isAuthenticate, deleteUser);
+    .delete("/", isAuthenticate, deleteUser)
+    .post("/get", isAuthenticate, authorizeRoles("admin", "hod"), getAllUser);
 
 export const userRouter = router;
