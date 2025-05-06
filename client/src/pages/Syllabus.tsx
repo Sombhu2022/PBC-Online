@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import SyllabusContent from "../components/syllabus/SyllabusContent";
 import { motion } from "framer-motion";
 
@@ -21,6 +21,9 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "../components/ui/dialog";
+import { useAuthStore } from "../store/authStore";
+import axiosInstance from "../api/axiosInstance";
+import { toast } from "sonner";
 
 // Framer Motion Variants
 const containerVariants = {
@@ -38,6 +41,25 @@ const itemVariants = {
 };
 
 const Syllabus = () => {
+
+    const departmentID =useAuthStore((state)=>state.user.departmentid)
+    const [syllabus, setSyllabus] = useState([]);
+    const fetchSyllabus = async () => {
+        let response;
+        try {
+            response = await axiosInstance.get(`/syllabus/${departmentID}`);
+            console.log("response=>", response.data.data);
+            setSyllabus(response.data.data || []);
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Failed to fetch syllabus");
+        }
+    };
+    useEffect(() => {
+        if (departmentID) {
+            fetchSyllabus();
+        }
+    }, [departmentID]);
+
     return (
         <>
             {/* <Helmet>
@@ -112,9 +134,13 @@ const Syllabus = () => {
                 initial="hidden"
                 animate="show"
             >
-                <motion.div variants={itemVariants}>
-                    <SyllabusContent />
-                </motion.div>
+                {syllabus.length === 0 ? (
+                    <p>No syllabus found</p>
+                ) : (
+                    <motion.div variants={itemVariants}>
+                        <SyllabusContent syllabus={syllabus}   />
+                    </motion.div>
+                )}
             </motion.div>
         </>
     );

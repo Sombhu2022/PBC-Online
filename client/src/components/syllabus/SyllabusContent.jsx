@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Table,
     TableBody,
@@ -16,46 +16,21 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet";
-
 import { Button } from "@/components/ui/button";
 import { PenIcon, Trash2, ScanEyeIcon, ArrowDownToLine } from "lucide-react";
 import { Input } from "../ui/input";
+const SyllabusContent = ({ syllabus = [] }) => {
+    console.log("syllabus=>", syllabus);
 
-const SyllabusContent = () => {
     const [searchTerm, setSearchTerm] = useState("");
-
-    const syllabusData = [
-        {
-            semester: "1",
-            papercode: "CC1",
-            papername: "Data Structures",
-        },
-        {
-            semester: "1",
-            papercode: "CC2",
-            papername: "Mathematics",
-        },
-        {
-            semester: "1",
-            papercode: "CC3",
-            papername: "Computer Fundamentals",
-        },
-        {
-            semester: "1",
-            papercode: "CC4",
-            papername: "Programming in C",
-        },
-    ];
-
-    const filteredData = syllabusData.filter(
+    const filteredData = syllabus.filter(
         (item) =>
-            item.papercode.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.papername.toLowerCase().includes(searchTerm.toLowerCase())
+            item.paperCode?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.paperName?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return (
         <>
-            {/* Search Input */}
             <div className="mb-4 w-full">
                 <Input
                     type="text"
@@ -79,23 +54,30 @@ const SyllabusContent = () => {
                         <TableHead className="text-center">
                             Paper Name
                         </TableHead>
-                        <TableHead className="text-right pr-[120px]">
+                        <TableHead
+                            className={
+                                role === "admin" || role === "hod"
+                                    ? "text-right pr-[120px]"
+                                    : "text-right pr-[60px]"
+                            }
+                        >
                             Action
                         </TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {filteredData.length > 0 ? (
-                        filteredData.map((items, index) => (
-                            <TableRow key={index}>
+                        filteredData.map((syllabus) => (
+                            <TableRow key={syllabus._id}>
                                 <TableCell className="text-left pl-10">
-                                    {items.semester}
+                                    {syllabus.semester?.name ||
+                                        syllabus.semester}
                                 </TableCell>
                                 <TableCell className="text-center">
-                                    {items.papercode}
+                                    {syllabus.paperCode}
                                 </TableCell>
                                 <TableCell className="text-center">
-                                    {items.papername}
+                                    {syllabus.paperName}
                                 </TableCell>
                                 <TableCell className="text-left">
                                     <div className="w-full flex justify-end pr-5 gap-1">
@@ -107,35 +89,80 @@ const SyllabusContent = () => {
                                                 <SheetHeader>
                                                     <SheetTitle className="h-20 w-full flex flex-col justify-center items-center">
                                                         <span className="font-normal">
-                                                            {items.semester}
+                                                            {syllabus.semester
+                                                                ?.name ||
+                                                                syllabus.semester}
                                                         </span>
                                                         <span className="font-normal">
-                                                            {items.papercode}
+                                                            {syllabus.paperCode}
                                                         </span>
                                                         <span className="font-normal">
-                                                            {items.papername}
+                                                            {syllabus.paperName}
                                                         </span>
                                                     </SheetTitle>
                                                     <SheetDescription>
-                                                        This is just a mock view
-                                                        section. You can
-                                                        customize this message
-                                                        depending on your
-                                                        feature.
+                                                        {syllabus.media &&
+                                                        syllabus.media.length >
+                                                            0 ? (
+                                                            syllabus.media[0].mediaUrl.match(
+                                                                /\.(jpeg|jpg|png|gif)$/i
+                                                            ) ? (
+                                                                <img
+                                                                    src={
+                                                                        syllabus
+                                                                            .media[0]
+                                                                            .mediaUrl
+                                                                    }
+                                                                    alt="Syllabus Media"
+                                                                    className="mt-2 max-w-full h-auto"
+                                                                />
+                                                            ) : (
+                                                                <a
+                                                                    href={
+                                                                        syllabus
+                                                                            .media[0]
+                                                                            .mediaUrl
+                                                                    }
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className="text-blue-600 underline"
+                                                                >
+                                                                    View PDF
+                                                                </a>
+                                                            )
+                                                        ) : (
+                                                            "No media available"
+                                                        )}
                                                     </SheetDescription>
                                                 </SheetHeader>
                                             </SheetContent>
                                         </Sheet>
 
-                                        <Button variant={"ghost"}>
+                                        <Button
+                                            variant={"ghost"}
+                                            onClick={() =>
+                                                handleDownload(syllabus.media)
+                                            }
+                                        >
                                             <ArrowDownToLine />
                                         </Button>
-                                        <Button variant={"ghost"}>
-                                            <PenIcon />
-                                        </Button>
-                                        <Button variant={"ghost"}>
-                                            <Trash2 />
-                                        </Button>
+                                        {(role === "admin" ||
+                                            role === "hod") && (
+                                            <>
+                                                <Button
+                                                    variant={"ghost"}
+                                                    // onClick={() => handleDelete(syllabus._id)}
+                                                >
+                                                    <PenIcon />
+                                                </Button>
+                                                <Button
+                                                    variant={"ghost"}
+                                                    // onClick={() => handleDelete(syllabus._id)}
+                                                >
+                                                    <Trash2 />
+                                                </Button>
+                                            </>
+                                        )}
                                     </div>
                                 </TableCell>
                             </TableRow>
@@ -157,116 +184,3 @@ const SyllabusContent = () => {
 };
 
 export default SyllabusContent;
-
-//Different approach
-
-// import React, { useState } from "react";
-// import {
-//     Table,
-//     TableBody,
-//     TableCaption,
-//     TableCell,
-//     TableHead,
-//     TableHeader,
-//     TableRow,
-// } from "@/components/ui/table";
-// import {
-//     Sheet,
-//     SheetContent,
-//     SheetDescription,
-//     SheetHeader,
-//     SheetTitle,
-//     SheetTrigger,
-// } from "@/components/ui/sheet";
-// import { Button } from "@/components/ui/button";
-// import { PenIcon, Trash2, ScanEyeIcon } from "lucide-react";
-// import { Input } from "../ui/input";
-
-// const SyllabusContent = ({ syllabusList, setSyllabusList }) => {
-//     const [searchTerm, setSearchTerm] = useState("");
-
-//     const handleDelete = (index) => {
-//         const updated = [...syllabusList];
-//         updated.splice(index, 1);
-//         setSyllabusList(updated);
-//     };
-
-//     const filteredData = syllabusList.filter(
-//         (item) => 
-//             item.papercode.toLowerCase().includes(searchTerm.toLowerCase()) ||
-//             item.papername.toLowerCase().includes(searchTerm.toLowerCase())
-//     );
-
-
-//     return (
-//         <>
-//             <div className="mb-4 w-full px-8">
-//                 <Input
-//                     type="text"
-//                     placeholder="Search by paper code or name..."
-//                     value={searchTerm}
-//                     onChange={(e) => setSearchTerm(e.target.value)}
-//                 />
-//             </div>
-//             <Table>
-//                 <TableCaption>List of syllabus papers</TableCaption>
-//                 <TableHeader>
-//                     <TableRow>
-//                         <TableHead>Semester</TableHead>
-//                         <TableHead className="text-center">Paper Code</TableHead>
-//                         <TableHead className="text-center">Paper Name</TableHead>
-//                         <TableHead className="text-right">Action</TableHead>
-//                     </TableRow>
-//                 </TableHeader>
-//                 <TableBody>
-//                     {filteredData.length > 0 ? (
-//                         filteredData.map((item, index) => (
-//                             <TableRow key={index}>
-//                                 <TableCell>{item.semester}</TableCell>
-//                                 <TableCell className="text-center">{item.papercode}</TableCell>
-//                                 <TableCell className="text-center">{item.papername}</TableCell>
-//                                 <TableCell className="text-right">
-//                                     <div className="flex justify-end gap-2 pr-5">
-//                                         <Sheet>
-//                                             <SheetTrigger>
-//                                                 <ScanEyeIcon />
-//                                             </SheetTrigger>
-//                                             <SheetContent>
-//                                                 <SheetHeader>
-//                                                     <SheetTitle>
-//                                                         {item.papercode} - {item.papername}
-//                                                     </SheetTitle>
-//                                                     <SheetDescription>
-//                                                         Mock preview content
-//                                                     </SheetDescription>
-//                                                 </SheetHeader>
-//                                             </SheetContent>
-//                                         </Sheet>
-//                                         <Button variant="ghost">
-//                                             <PenIcon />
-//                                         </Button>
-//                                         <Button
-//                                             variant="ghost"
-//                                             onClick={() => handleDelete(index)}
-//                                         >
-//                                             <Trash2 />
-//                                         </Button>
-//                                     </div>
-//                                 </TableCell>
-//                             </TableRow>
-//                         ))
-//                     ) : (
-//                         <TableRow>
-//                             <TableCell colSpan={4} className="text-center text-gray-400 italic">
-//                                 No matching syllabus found.
-//                             </TableCell>
-//                         </TableRow>
-//                     )}
-//                 </TableBody>
-//             </Table>
-
-//         </>
-//     );
-// };
-
-// export default SyllabusContent;
