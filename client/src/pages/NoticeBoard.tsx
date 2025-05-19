@@ -57,11 +57,11 @@ const NoticeBoard = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3 }}
                 >
-                    <h1 className="text-3xl font-bold">Notice Board</h1>
+                    <h1 className="text-2xl font-semibold">Notice Board</h1>
                     <Dialog>
                         <DialogTrigger>
                             <Button
-                                variant="outline"
+                                variant="default"
                                 className="flex flex-row items-center justify-center"
                             >
                                 <Plus />
