@@ -9,6 +9,10 @@ import {
     sendOtpForVerifyAccount,
     updateUser,
     VerifyOtpWithExpiry,
+    registerStudent,
+    verifyUser ,
+    changePasswordWithOldPassword ,
+    forgotPassword,
 } from "../controller/user.controller.js";
 import userValidation from "../validations/user.validation.js";
 import {
@@ -22,11 +26,15 @@ router
     .post(
         "/create",
         validate(userValidation.createUser),
-        // isAuthenticate,
-        // authorizeRoles("admin", "hod"),
+        isAuthenticate,
+        authorizeRoles("admin", "hod"),
         createUser
     )
+    .post("/create/student", validate(userValidation.createUser), registerStudent)
+    .post("/verify-user" , validate(userValidation.verifyOtp), verifyUser)
+
     .post("/login", validate(userValidation.login), logInUser)
+
     .post(
         "/send-otp",
         validate(userValidation.sendOtp),
@@ -37,6 +45,16 @@ router
         validate(userValidation.verifyOtp),
         VerifyOtpWithExpiry
     )
+
+    .post(
+        "/change-password",
+        validate(userValidation.changePasswordWithOldPassword),
+        isAuthenticate,
+        changePasswordWithOldPassword
+    )
+
+    .post("/forgot-password", validate(userValidation.changePasswordWithOtp), forgotPassword )
+
     .post(
         "/profile-pic-change",
         validate(userValidation.changeProfilePic),

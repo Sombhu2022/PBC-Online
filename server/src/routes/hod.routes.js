@@ -7,7 +7,7 @@ import { authorizeRoles, isAuthenticate } from "../middlewares/authentication.mi
 const router = express.Router();
 
 router
-    .post('/', validate(departmentValidation.create), isAuthenticate , authorizeRoles("admin") , departmentController.createDepartment)
+    .post('/', validate(hodValidations.create), isAuthenticate , authorizeRoles("admin") , departmentController.createDepartment)
     .get('/', departmentController.showDepartment) 
     .get('/:departmentId', departmentController.showDepartment)
     .patch('/:departmentId',  isAuthenticate , authorizeRoles("admin") , validate(departmentValidation.update), departmentController.updateDepartment)

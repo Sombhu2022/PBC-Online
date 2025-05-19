@@ -50,6 +50,10 @@ const userSchema = new Schema({
     otpExpiary: {
         type: Date
     },
+    isVerify: {
+        type: Boolean,
+        default: false
+    },
     isProfileComplete : {
         type:Boolean,
         default:false

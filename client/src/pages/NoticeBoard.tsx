@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { Plus } from "lucide-react";
 import { motion } from "framer-motion";
@@ -16,6 +16,9 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "../components/ui/dialog";
+import axiosInstance from "../api/axiosInstance";
+import { useAuthStore } from "../store/authStore";
+import { toast } from "sonner";
 
 const containerVariants = {
     hidden: {},
@@ -32,6 +35,19 @@ const itemVariants = {
 };
 
 const NoticeBoard = () => {
+    const departmentID =useAuthStore((state)=>state.user.departmentid)
+    const [notices, setNotices] = useState([]);
+    const fetchNotices = async () => {
+        try {
+            const response = await axiosInstance.get("/noticeboard", {
+                params: { department: departmentID },
+            });
+            setNotices(response.data.data || []);
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Failed to fetch notices");
+        }
+    };
+
     return (
         <>
             <div className="p-6 flex-col flex gap-4">
@@ -97,11 +113,20 @@ const NoticeBoard = () => {
                     initial="hidden"
                     animate="show"
                 >
-                    {Array.from({ length: 10 }).map((_, index) => (
+                     {notices.length === 0 ? (
+                    <p>No notices found</p>
+                ) : (
+                    notices.map((notice) => (
+                        <motion.div variants={itemVariants} key={notice._id}>
+                            <NoticeContent notice={notice} />
+                        </motion.div>
+                    ))
+                )}
+                    {/* {Array.from({ length: 10 }).map((_, index) => (
                         <motion.div variants={itemVariants} key={index}>
                             <NoticeContent />
                         </motion.div>
-                    ))}
+                    ))} */}
                 </motion.div>
             </div>
         </>
