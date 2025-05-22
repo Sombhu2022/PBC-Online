@@ -7,8 +7,9 @@ class NoticeboardController {
     async createNotice(req, res) {
         try {
             const noticeData = req.body;
+            const { id }= req.user 
 
-            const notice = await noticeboardService.createNotice(noticeData);
+            const notice = await noticeboardService.createNotice(noticeData , req.file , id );
 
             return sendResponse(res, {
                 status: HTTP_STATUS.CREATED,

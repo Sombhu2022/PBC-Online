@@ -1,13 +1,13 @@
 import { z } from "zod";
 
 class NoticeboardValidation {
-    
+
     // Create Notice
     create = z.object({
         body: z.object({
-            user: z.string({ required_error: "User ID is required" }),
+            // user: z.string({ required_error: "User ID is required" }),
 
-            department: z.string({ required_error: "Department ID is required" }),
+            department: z.string({ required_error: "Department ID is required" }).optional(),
 
             title: z
                 .string({ required_error: "Title is required" })
@@ -21,11 +21,16 @@ class NoticeboardValidation {
                 .max(500, "Description should be within 500 characters")
                 .trim(),
 
-            media: z
-                .object({
-                    url: z.string({ required_error: "Media URL is required" }).url("Invalid URL"),
-                    public_id: z.string({ required_error: "Media public ID is required" }),
-                })
+            file: z.object({
+                fieldname: z.string(),
+                originalname: z.string(),
+                encoding: z.string(),
+                mimetype: z.string(),
+                destination: z.string(),
+                filename: z.string(),
+                path: z.string(),
+                size: z.number().min(1, "File size must be greater than 0"),
+            }),
         }),
     });
 
