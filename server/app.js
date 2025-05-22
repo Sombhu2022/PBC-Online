@@ -11,8 +11,7 @@ import { noticeboardRouter } from "./src/routes/noticeboard.routes.js"
 import { cloudinaryConfig } from "./src/config/cloudinary.config.js"
 import { userRouter } from "./src/routes/user.routes.js"
 import { externalRouter } from "./src/routes/extarnal.routes.js"
-
-
+import cookieParser from "cookie-parser"
 
 const server = express()
 
@@ -21,7 +20,7 @@ cloudinaryConfig()
 server.use(bodyParser.json({ limit: "50mb" }))
 server.use(express.json({ limit: "50mb" }))
 server.use(bodyParser.urlencoded({ limit: "50mb", extended: true }))
-
+server.use(cookieParser())
 // all routes 
 
 server.use('/api/v1/certificate', certificateRouter)

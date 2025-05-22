@@ -127,6 +127,7 @@ export function Sidebar() {
 
             <div className="flex-1 overflow-auto p-3 flex flex-col gap-1">
                 {(role === "admin" || role === "hod") && (
+                    <>
                     <SidebarLink
                         icon={Home}
                         label="Dashboard"
@@ -134,6 +135,14 @@ export function Sidebar() {
                         isCollapsed={isCollapsed}
                         link={"/"}
                     />
+                    <SidebarLink
+                        icon={Home}
+                        label="Department"
+                        isActive={true}
+                        isCollapsed={isCollapsed}
+                        link={"/department"}
+                    />
+                    </>
                 )}
                 <SidebarLink
                     icon={ClipboardList}

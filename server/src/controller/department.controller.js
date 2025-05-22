@@ -7,7 +7,8 @@ class DepartmentController {
     async createDepartment(req, res) {
         try {
             const department = await departmentService.createDepartment(
-                req.body
+                req.body ,
+                req.user
             );
 
             return sendResponse(res, {
@@ -60,6 +61,29 @@ class DepartmentController {
             } else {
                 department = await departmentService.showDepartment();
             }
+
+            return sendResponse(res, {
+                status: HTTP_STATUS.OK,
+                message: RESPONSE_MESSAGES.DEPARTMENT_GET,
+                success: true,
+                data: department,
+            });
+        } catch (error) {
+            console.log(error);
+
+            return sendResponse(res, {
+                status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+                message: RESPONSE_MESSAGES.INTERNAL_ERROR,
+                success: false,
+                error: error,
+            });
+        }
+    }
+
+    async showDepartmentList(req, res) {
+        try {
+            const department = await departmentService.showDepartment();
+            
 
             return sendResponse(res, {
                 status: HTTP_STATUS.OK,

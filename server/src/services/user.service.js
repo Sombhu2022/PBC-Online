@@ -238,7 +238,6 @@ export const UserService = {
         return user;
     },
 
-    
 
     async deleteUser(id) {
         return await Users.findByIdAndDelete(id);

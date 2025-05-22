@@ -20,6 +20,10 @@ import {
     Syllabus,
 } from "./pages";
 import AuthForm from "./pages/Login";
+import Department from "./pages/Department";
+
+
+
 
 const App = () => (
     <ThemeProvider>
@@ -36,6 +40,7 @@ const App = () => (
                                 path="/cirtificates"
                                 element={<Cirtificates />}
                             />
+                            <Route path="/department" element={<Department />} />
                             <Route path="/meetings" element={<Meetings />} />
                             <Route path="/members" element={<Members />} />
                             <Route path="/notice-board" element={<NoticeBoard />} />

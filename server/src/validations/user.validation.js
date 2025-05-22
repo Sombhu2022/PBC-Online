@@ -9,6 +9,7 @@ class UserValidation {
                 .min(3, "Name is required")
                 .max(60, "name must be 60 charector or less "),
             email: z.string().trim().email("Invalid email format"),
+            role: z.string().trim(),
             password: z
                 .string()
                 .trim()
