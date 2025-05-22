@@ -38,7 +38,7 @@ const noticeboardSchema =new Schema({
 
         type : Schema.Types.ObjectId,
         ref : 'department',
-        required : true
+        // required : true
     }
 } ,{ timestamps : true }) 
 
