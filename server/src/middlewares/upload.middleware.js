@@ -10,6 +10,7 @@ if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
 // Multer disk storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
+    console.log("==============================>", file);
     cb(null, uploadDir); // temporary local folder
   },
   filename: (req, file, cb) => {
@@ -20,12 +21,7 @@ const storage = multer.diskStorage({
 
 // Only accept PDF, image, video, audio, etc.
 const fileFilter = (req, file, cb) => {
-  const allowedTypes = [
-    "application/pdf",
-    "image/",
-    "video/",
-    "audio/",
-  ];
+  const allowedTypes = ["application/pdf", "image/", "video/", "audio/"];
 
   if (allowedTypes.some((type) => file.mimetype.startsWith(type))) {
     cb(null, true);

@@ -3,152 +3,183 @@ import SyllabusContent from "../components/syllabus/SyllabusContent";
 import { motion } from "framer-motion";
 
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "../components/ui/select";
 import { Input } from "../components/ui/input";
 // import { Helmet } from 'react-helmet';
 import { Label } from "../components/ui/label";
 import { Button } from "../components/ui/button";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "../components/ui/dialog";
 import { useAuthStore } from "../store/authStore";
 import axiosInstance from "../api/axiosInstance";
 import { toast } from "sonner";
+import { useDepartmentStore } from "../store/depertment";
 
 // Framer Motion Variants
 const containerVariants = {
-    hidden: {},
-    show: {
-        transition: {
-            staggerChildren: 0.1,
-        },
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.1,
     },
+  },
 };
 
 const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
 };
 
 const Syllabus = () => {
+  const departmentID = useAuthStore((state) => state.user.departmentid);
+  const departments = useDepartmentStore((state) => state.departments);
+  const fetchDepartments = useDepartmentStore(
+    (state) => state.fetchDepartments
+  );
+  const selectedDepartment = useDepartmentStore(
+    (state) => state.selectedDepartment
+  );
+  const setSelectedDepartment = useDepartmentStore(
+    (state) => state.setSelectedDepartment
+  );
+  const [syllabus, setSyllabus] = useState([]);
+  const fetchSyllabus = async () => {
+    let response;
+    try {
+      response = await axiosInstance.get(`/syllabus/${departmentID}`);
+      console.log("response=>", response.data.data);
+      setSyllabus(response.data.data || []);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to fetch syllabus");
+    }
+  };
+  useEffect(() => {
+    if (departmentID) {
+      fetchSyllabus();
+    }
+    fetchDepartments();
+  }, [departmentID]);
 
-    const departmentID =useAuthStore((state)=>state.user.departmentid)
-    const [syllabus, setSyllabus] = useState([]);
-    const fetchSyllabus = async () => {
-        let response;
-        try {
-            response = await axiosInstance.get(`/syllabus/${departmentID}`);
-            console.log("response=>", response.data.data);
-            setSyllabus(response.data.data || []);
-        } catch (error) {
-            toast.error(error.response?.data?.message || "Failed to fetch syllabus");
-        }
-    };
-    useEffect(() => {
-        if (departmentID) {
-            fetchSyllabus();
-        }
-    }, [departmentID]);
-
-    return (
-        <>
-            {/* <Helmet>
+  return (
+    <>
+      {/* <Helmet>
                 <title>Syllabus | PBC Online</title>
             </Helmet> */}
 
-            {/* Header with button */}
-            <motion.div
-                className="flex items-center justify-between px-8 py-4"
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-            >
-                <h1 className="text-3xl font-bold">Syllabus</h1>
+      {/* Header with button */}
+      <motion.div
+        className="flex items-center justify-between px-8 py-4"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <h1 className="text-3xl font-bold">Syllabus</h1>
 
-                <Dialog>
-                    <DialogTrigger>
-                        <Button variant="outline">+ Add Syllabus</Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>ADD new Syllabus</DialogTitle>
-                            <DialogDescription>
-                                <form className="mt-6 flex flex-col gap-5 py-3">
-                                    <div className="w-full flex gap-4">
-                                        <div className="w-1/2">
-                                            <Label htmlFor="role">Semester</Label>
-                                            <Select>
-                                                <SelectTrigger className="w-full">
-                                                    <SelectValue placeholder="Semester" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    {[...Array(8)].map((_, i) => (
-                                                        <SelectItem key={i} value={`${i + 1}`}>
-                                                            {`${i + 1}st Semester`.replace("1st", `${i + 1}th`).replace("11th", "11th").replace("12th", "12th").replace("13th", "13th")}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                        <div>
-                                            <Label>Paper Code</Label>
-                                            <Input id="doc" type="text" />
-                                        </div>
-                                    </div>
-                                    <div className="w-full">
-                                        <Label htmlFor="title">Paper Name</Label>
-                                        <Input id="title" type="text" />
-                                    </div>
-                                    <div>
-                                        <Label htmlFor="doc">Upload Syllabus</Label>
-                                        <Input
-                                            placeholder="Upload Syllabus"
-                                            id="doc"
-                                            type="file"
-                                            className="h-[5rem] w-full rounded-md cursor-pointer"
-                                        />
-                                    </div>
-                                    <Button variant="default" className="w-full bg-slate-900">
-                                        Create
-                                    </Button>
-                                </form>
-                            </DialogDescription>
-                        </DialogHeader>
-                    </DialogContent>
-                </Dialog>
-            </motion.div>
+        <Dialog>
+          <DialogTrigger>
+            <Button variant="outline">+ Add Syllabus</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>ADD new Syllabus</DialogTitle>
+              <DialogDescription>
+                <form className="mt-6 flex flex-col gap-5 py-3">
+                  <div className="w-full flex gap-4">
+                    <div className="w-1/2">
+                      <Label htmlFor="department">Department</Label>
+                      <Select
+                        value={selectedDepartment?._id || ""}
+                        onValueChange={(value) => {
+                          const dept = departments.find((d) => d._id === value);
+                          setSelectedDepartment(dept || null);
+                        }}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select Department" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {departments.map((dept) => (
+                            <SelectItem key={dept._id} value={dept._id}>
+                              {dept.name || dept.title || "Unnamed Department"}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-            {/* Animate Syllabus Content */}
-            <motion.div
-                variants={containerVariants}
-                initial="hidden"
-                animate="show"
-            >
-                {syllabus.length === 0 ? (
-                    <p>No syllabus found</p>
-                ) : (
-                    <motion.div variants={itemVariants}>
-                        <SyllabusContent syllabus={syllabus}   />
-                    </motion.div>
-                )}
-            </motion.div>
-        </>
-    );
+                    <div className="w-1/2">
+                      <Label htmlFor="role">Semester</Label>
+                      <Select>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Semester" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {[...Array(8)].map((_, i) => (
+                            <SelectItem key={i} value={`${i + 1}`}>
+                              {`${i + 1}st Semester`
+                                .replace("1st", `${i + 1}th`)
+                                .replace("11th", "11th")
+                                .replace("12th", "12th")
+                                .replace("13th", "13th")}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label>Paper Code</Label>
+                      <Input id="doc" type="text" />
+                    </div>
+                  </div>
+                  <div className="w-full">
+                    <Label htmlFor="title">Paper Name</Label>
+                    <Input id="title" type="text" />
+                  </div>
+                  <div>
+                    <Label htmlFor="doc">Upload Syllabus</Label>
+                    <Input
+                      placeholder="Upload Syllabus"
+                      id="doc"
+                      type="file"
+                      className="h-[5rem] w-full rounded-md cursor-pointer"
+                    />
+                  </div>
+                  <Button variant="default" className="w-full bg-slate-900">
+                    Create
+                  </Button>
+                </form>
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+      </motion.div>
+
+      {/* Animate Syllabus Content */}
+      <motion.div variants={containerVariants} initial="hidden" animate="show">
+        {syllabus.length === 0 ? (
+          <p>No syllabus found</p>
+        ) : (
+          <motion.div variants={itemVariants}>
+            <SyllabusContent syllabus={syllabus} />
+          </motion.div>
+        )}
+      </motion.div>
+    </>
+  );
 };
 
 export default Syllabus;
-
-
 
 // import React, { useState } from "react";
 // import SyllabusContent from "../components/syllabus/SyllabusContent";
