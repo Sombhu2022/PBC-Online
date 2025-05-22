@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import SyllabusContent from "../components/syllabus/SyllabusContent";
 import { motion } from "framer-motion";
-
 import {
   Select,
   SelectContent,
@@ -10,7 +9,6 @@ import {
   SelectValue,
 } from "../components/ui/select";
 import { Input } from "../components/ui/input";
-// import { Helmet } from 'react-helmet';
 import { Label } from "../components/ui/label";
 import { Button } from "../components/ui/button";
 import {
@@ -22,27 +20,13 @@ import {
   DialogTrigger,
 } from "../components/ui/dialog";
 import { useAuthStore } from "../store/authStore";
-import axiosInstance from "../api/axiosInstance";
-import { toast } from "sonner";
 import { useDepartmentStore } from "../store/depertment";
-
-// Framer Motion Variants
-const containerVariants = {
-  hidden: {},
-  show: {
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
-};
+import { useSyllabusStore } from "../store/syllabusStore";
+import { toast } from "sonner";
 
 const Syllabus = () => {
-  const departmentID = useAuthStore((state) => state.user.departmentid);
+  const userID = useAuthStore((state) => state.user?._id || state.user?.id);
+
   const departments = useDepartmentStore((state) => state.departments);
   const fetchDepartments = useDepartmentStore(
     (state) => state.fetchDepartments
@@ -53,31 +37,54 @@ const Syllabus = () => {
   const setSelectedDepartment = useDepartmentStore(
     (state) => state.setSelectedDepartment
   );
-  const [syllabus, setSyllabus] = useState([]);
-  const fetchSyllabus = async () => {
-    let response;
-    try {
-      response = await axiosInstance.get(`/syllabus/${departmentID}`);
-      console.log("response=>", response.data.data);
-      setSyllabus(response.data.data || []);
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to fetch syllabus");
-    }
-  };
+
+  const semesters = useDepartmentStore((state) => state.semesters);
+  const fetchSemesters = useDepartmentStore((state) => state.fetchSemesters);
+
+  const { syllabuses, fetchSyllabuses, createSyllabus, isLoading } =
+    useSyllabusStore();
+
+  const [selectedSemester, setSelectedSemester] = useState("");
+  const [paperCode, setPaperCode] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const departmentID = selectedDepartment?._id;
+
+  useEffect(() => {
+    fetchDepartments();
+  }, []);
+
   useEffect(() => {
     if (departmentID) {
-      fetchSyllabus();
+      fetchSemesters(departmentID);
+      fetchSyllabuses({ department: departmentID });
     }
-    fetchDepartments();
   }, [departmentID]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!userID || !departmentID || !selectedSemester || !paperCode || !file) {
+      return toast.error("All fields are required.");
+    }
+
+    const formData = new FormData();
+    formData.append("user", userID);
+    formData.append("department", departmentID);
+    formData.append("semester", selectedSemester);
+    formData.append("paperCode", paperCode);
+    formData.append("document", file);
+
+    await createSyllabus(formData);
+    setIsDialogOpen(false);
+    setPaperCode("");
+    setSelectedSemester("");
+    setFile(null);
+  };
 
   return (
     <>
-      {/* <Helmet>
-                <title>Syllabus | PBC Online</title>
-            </Helmet> */}
-
-      {/* Header with button */}
       <motion.div
         className="flex items-center justify-between px-8 py-4"
         initial={{ opacity: 0, y: -20 }}
@@ -85,19 +92,22 @@ const Syllabus = () => {
         transition={{ duration: 0.3 }}
       >
         <h1 className="text-3xl font-bold">Syllabus</h1>
-
-        <Dialog>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger>
             <Button variant="outline">+ Add Syllabus</Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>ADD new Syllabus</DialogTitle>
+              <DialogTitle>Add New Syllabus</DialogTitle>
               <DialogDescription>
-                <form className="mt-6 flex flex-col gap-5 py-3">
+                <form
+                  className="mt-6 flex flex-col gap-5 py-3"
+                  onSubmit={handleSubmit}
+                  encType="multipart/form-data"
+                >
                   <div className="w-full flex gap-4">
                     <div className="w-1/2">
-                      <Label htmlFor="department">Department</Label>
+                      <Label>Department</Label>
                       <Select
                         value={selectedDepartment?._id || ""}
                         onValueChange={(value) => {
@@ -111,52 +121,59 @@ const Syllabus = () => {
                         <SelectContent>
                           {departments.map((dept) => (
                             <SelectItem key={dept._id} value={dept._id}>
-                              {dept.name || dept.title || "Unnamed Department"}
+                              {dept.name || "Unnamed Dept"}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                     </div>
-
                     <div className="w-1/2">
-                      <Label htmlFor="role">Semester</Label>
-                      <Select>
+                      <Label>Semester</Label>
+                      <Select
+                        value={selectedSemester}
+                        onValueChange={(val) => setSelectedSemester(val)}
+                      >
                         <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Semester" />
+                          <SelectValue placeholder="Select Semester" />
                         </SelectTrigger>
                         <SelectContent>
-                          {[...Array(8)].map((_, i) => (
-                            <SelectItem key={i} value={`${i + 1}`}>
-                              {`${i + 1}st Semester`
-                                .replace("1st", `${i + 1}th`)
-                                .replace("11th", "11th")
-                                .replace("12th", "12th")
-                                .replace("13th", "13th")}
+                          {semesters.map((sem) => (
+                            <SelectItem key={sem._id} value={sem._id}>
+                              {sem.name ||
+                                sem.title ||
+                                `Semester ${sem.number || ""}`}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                     </div>
-                    <div>
-                      <Label>Paper Code</Label>
-                      <Input id="doc" type="text" />
-                    </div>
                   </div>
+
                   <div className="w-full">
-                    <Label htmlFor="title">Paper Name</Label>
-                    <Input id="title" type="text" />
-                  </div>
-                  <div>
-                    <Label htmlFor="doc">Upload Syllabus</Label>
+                    <Label>Paper Code</Label>
                     <Input
-                      placeholder="Upload Syllabus"
-                      id="doc"
-                      type="file"
-                      className="h-[5rem] w-full rounded-md cursor-pointer"
+                      value={paperCode}
+                      onChange={(e) => setPaperCode(e.target.value)}
+                      required
                     />
                   </div>
-                  <Button variant="default" className="w-full bg-slate-900">
-                    Create
+
+                  <div className="w-full">
+                    <Label>Upload Syllabus (PDF)</Label>
+                    <Input
+                      type="file"
+                      accept=".pdf"
+                      onChange={(e) => setFile(e.target.files?.[0] || null)}
+                      required
+                    />
+                  </div>
+
+                  <Button
+                    type="submit"
+                    className="w-full bg-slate-900"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? "Creating..." : "Create"}
                   </Button>
                 </form>
               </DialogDescription>
@@ -165,14 +182,11 @@ const Syllabus = () => {
         </Dialog>
       </motion.div>
 
-      {/* Animate Syllabus Content */}
-      <motion.div variants={containerVariants} initial="hidden" animate="show">
-        {syllabus.length === 0 ? (
-          <p>No syllabus found</p>
+      <motion.div initial="hidden" animate="show">
+        {syllabuses.length === 0 ? (
+          <p className="text-center text-gray-500">No syllabus found</p>
         ) : (
-          <motion.div variants={itemVariants}>
-            <SyllabusContent syllabus={syllabus} />
-          </motion.div>
+          <SyllabusContent syllabus={syllabuses} />
         )}
       </motion.div>
     </>
@@ -180,126 +194,3 @@ const Syllabus = () => {
 };
 
 export default Syllabus;
-
-// import React, { useState } from "react";
-// import SyllabusContent from "../components/syllabus/SyllabusContent";
-// import { motion } from "framer-motion";
-// import {
-//     Select,
-//     SelectContent,
-//     SelectItem,
-//     SelectTrigger,
-//     SelectValue,
-// } from "../components/ui/select";
-// import { Button } from "../components/ui/button";
-// import {
-//     Dialog,
-//     DialogContent,
-//     DialogDescription,
-//     DialogHeader,
-//     DialogTitle,
-//     DialogTrigger,
-// } from "../components/ui/dialog";
-// import { Input } from "../components/ui/input";
-// import { Label } from "../components/ui/label";
-
-// const Syllabus = () => {
-//     const [selectedSemester, setSelectedSemester] = useState("1");
-//     const [syllabusData, setSyllabusData] = useState<{ [key: string]: any[] }>({
-//         1: [],
-//         2: [],
-//         3: [],
-//         4: [],
-//         5: [],
-//         6: [],
-//         7: [],
-//         8: [],
-//     });
-
-//     const handleAddSyllabus = (newSyllabus: any) => {
-//         setSyllabusData((prev) => ({
-//             ...prev,
-//             [selectedSemester]: [...prev[selectedSemester], newSyllabus],
-//         }));
-//     };
-
-//     return (
-//         <>
-//             <motion.div
-//                 className="flex items-center justify-between px-8 py-4"
-//                 initial={{ opacity: 0, y: -20 }}
-//                 animate={{ opacity: 1, y: 0 }}
-//                 transition={{ duration: 0.3 }}
-//             >
-//                 <h1 className="text-3xl font-bold">Syllabus</h1>
-
-//                 <Dialog>
-//                     <DialogTrigger>
-//                         <Button variant="outline">+ Add Syllabus</Button>
-//                     </DialogTrigger>
-//                     <DialogContent>
-//                         <DialogHeader>
-//                             <DialogTitle>ADD New Syllabus</DialogTitle>
-//                             <DialogDescription>
-//                                 <AddSyllabusForm onSubmit={handleAddSyllabus} semester={selectedSemester} />
-//                             </DialogDescription>
-//                         </DialogHeader>
-//                     </DialogContent>
-//                 </Dialog>
-//             </motion.div>
-
-//             <div className="px-8 pb-4">
-//                 <Select value={selectedSemester} onValueChange={setSelectedSemester}>
-//                     <SelectTrigger className="w-48">
-//                         <SelectValue placeholder="Select Semester" />
-//                     </SelectTrigger>
-//                     <SelectContent>
-//                         {[...Array(8)].map((_, i) => (
-//                             <SelectItem key={i} value={`${i + 1}`}>
-//                                 Semester {i + 1}
-//                             </SelectItem>
-//                         ))}
-//                     </SelectContent>
-//                 </Select>
-//             </div>
-
-//             <motion.div initial="hidden" animate="show">
-//                 <SyllabusContent
-//                     syllabusList={syllabusData[selectedSemester]}
-//                     setSyllabusList={(updatedList: any[]) =>
-//                         setSyllabusData((prev) => ({
-//                             ...prev,
-//                             [selectedSemester]: updatedList,
-//                         }))
-//                     }
-//                 />
-//             </motion.div>
-//         </>
-//     );
-// };
-
-// const AddSyllabusForm = ({ onSubmit, semester }: any) => {
-//     const [code, setCode] = useState("");
-//     const [name, setName] = useState("");
-
-//     const handleSubmit = (e: any) => {
-//         e.preventDefault();
-//         onSubmit({ semester, papercode: code, papername: name });
-//         setCode("");
-//         setName("");
-//     };
-
-//     return (
-//         <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-4">
-//             <Label>Paper Code</Label>
-//             <Input value={code} onChange={(e) => setCode(e.target.value)} required />
-//             <Label>Paper Name</Label>
-//             <Input value={name} onChange={(e) => setName(e.target.value)} required />
-//             <Button type="submit" className="bg-slate-900 w-full">
-//                 Add
-//             </Button>
-//         </form>
-//     );
-// };
-
-// export default Syllabus;
