@@ -21,6 +21,7 @@ import { useAuthStore } from "../../store/authStore";
 
 const NoticeContent = ({ notice }) => {
     const role = useAuthStore((state) => state.role);
+    console.log("log",role)
 
    
 

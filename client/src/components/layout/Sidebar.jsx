@@ -82,6 +82,7 @@ export function Sidebar() {
     const isDarkMode = theme === "dark";
 
     const { logout, isAuthenticated, role } = useAuthStore();
+    console.log("ssss----",role);
 
     const toggleSidebar = () => {
         setIsCollapsed(!isCollapsed);
