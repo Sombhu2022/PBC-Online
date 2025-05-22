@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Plus } from "lucide-react";
 import { motion } from "framer-motion";
@@ -34,19 +34,49 @@ const itemVariants = {
     show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
 };
 
+const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const title = formData.get("title");
+    const description = formData.get("description");
+    const file = formData.get("notice");
+
+    if (!title || !description || !file) {
+        toast.error("Please fill all fields");
+        return;
+    }
+
+    try {
+        const response = await axiosInstance.post("/noticeboard", {
+            title,
+            description,
+            file,
+        });
+        toast.success(response.data.message);
+    } catch (error) {
+        toast.error(error.response?.data?.message || "Failed to create notice");
+    }
+};
+
 const NoticeBoard = () => {
-    const departmentID =useAuthStore((state)=>state.user.departmentid)
+    // const departmentID = useAuthStore((state) => state.user.departmentid);
     const [notices, setNotices] = useState([]);
     const fetchNotices = async () => {
         try {
-            const response = await axiosInstance.get("/noticeboard", {
-                params: { department: departmentID },
-            });
+            const response = await axiosInstance.get("/noticeboard");
+            console.log(response);
+
             setNotices(response.data.data || []);
         } catch (error) {
-            toast.error(error.response?.data?.message || "Failed to fetch notices");
+            toast.error(
+                error.response?.data?.message || "Failed to fetch notices"
+            );
         }
     };
+
+    useEffect(() => {
+        fetchNotices();
+    }, []);
 
     return (
         <>
@@ -72,18 +102,26 @@ const NoticeBoard = () => {
                             <DialogHeader>
                                 <DialogTitle>Create a new notice</DialogTitle>
                                 <DialogDescription>
-                                    <form className="mt-6 flex flex-col gap-5">
+                                    <form
+                                        className="mt-6 flex flex-col gap-5"
+                                        onSubmit={handleSubmit}
+                                    >
                                         <div>
                                             <Label htmlFor="title">
                                                 Notice title
                                             </Label>
-                                            <Input id="title" type="text" />
+                                            <Input
+                                                id="title"
+                                                type="text"
+                                                name="title"
+                                            />
                                             <Label htmlFor="description">
                                                 Notice description
                                             </Label>
                                             <Textarea
                                                 id="description"
                                                 rows={6}
+                                                name="description"
                                             />
                                             <Label htmlFor="doc">
                                                 Upload notice
@@ -91,7 +129,8 @@ const NoticeBoard = () => {
                                             <Input
                                                 id="doc"
                                                 type="file"
-                                                accept=".pdf"
+                                                accept="image/*"
+                                                name="notice"
                                             />
                                         </div>
                                         <Button
@@ -113,15 +152,18 @@ const NoticeBoard = () => {
                     initial="hidden"
                     animate="show"
                 >
-                     {notices.length === 0 ? (
-                    <p>No notices found</p>
-                ) : (
-                    notices.map((notice) => (
-                        <motion.div variants={itemVariants} key={notice._id}>
-                            <NoticeContent notice={notice} />
-                        </motion.div>
-                    ))
-                )}
+                    {notices.length === 0 ? (
+                        <p>No notices found</p>
+                    ) : (
+                        notices.map((notice) => (
+                            <motion.div
+                                variants={itemVariants}
+                                key={notice?._id}
+                            >
+                                <NoticeContent notice={notice} />
+                            </motion.div>
+                        ))
+                    )}
                     {/* {Array.from({ length: 10 }).map((_, index) => (
                         <motion.div variants={itemVariants} key={index}>
                             <NoticeContent />

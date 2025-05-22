@@ -6,13 +6,15 @@ import { sendResponse } from "../utils/response.handler.js";
 class NoticeboardController {
     async createNotice(req, res) {
         try {
-            const noticeData = req.body;
+            console.log(req.body);
 
-            const notice = await noticeboardService.createNotice(noticeData);
+            const notice = await noticeboardService.createNotice(req);
 
             return sendResponse(res, {
                 status: HTTP_STATUS.CREATED,
-                message: RESPONSE_MESSAGES.NOTICE_CREATED || "Notice created successfully",
+                message:
+                    RESPONSE_MESSAGES.NOTICE_CREATED ||
+                    "Notice created successfully",
                 success: true,
                 data: notice,
             });
@@ -28,16 +30,18 @@ class NoticeboardController {
 
     async showNotices(req, res) {
         try {
-            const filterData = {
-                user: req.query.user,
-                department: req.query.department,
-            };
+            // const filterData = {
+            //     user: req.query.user,
+            //     department: req.query.department,
+            // };
 
-            const notices = await noticeboardService.showNotices(filterData);
+            const notices = await noticeboardService.showNotices();
 
             return sendResponse(res, {
                 status: HTTP_STATUS.OK,
-                message: RESPONSE_MESSAGES.FETCH_SUCCESS || "Notices fetched successfully",
+                message:
+                    RESPONSE_MESSAGES.FETCH_SUCCESS ||
+                    "Notices fetched successfully",
                 success: true,
                 data: notices,
             });
@@ -54,11 +58,16 @@ class NoticeboardController {
     async updateNotice(req, res) {
         try {
             const id = req.params.noticeId;
-            const updatedNotice = await noticeboardService.updateNotice(id, req.body);
+            const updatedNotice = await noticeboardService.updateNotice(
+                id,
+                req.body
+            );
 
             return sendResponse(res, {
                 status: HTTP_STATUS.OK,
-                message: RESPONSE_MESSAGES.NOTICE_UPDATED || "Notice updated successfully",
+                message:
+                    RESPONSE_MESSAGES.NOTICE_UPDATED ||
+                    "Notice updated successfully",
                 success: true,
                 data: updatedNotice,
             });
@@ -79,7 +88,9 @@ class NoticeboardController {
 
             return sendResponse(res, {
                 status: HTTP_STATUS.OK,
-                message: RESPONSE_MESSAGES.NOTICE_DELETED || "Notice deleted successfully",
+                message:
+                    RESPONSE_MESSAGES.NOTICE_DELETED ||
+                    "Notice deleted successfully",
                 success: true,
                 data: deletedNotice,
             });

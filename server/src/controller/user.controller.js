@@ -4,6 +4,26 @@ import { RESPONSE_MESSAGES } from "../constants/responseMessage.constants.js";
 import { sendResponse } from "../utils/response.handler.js";
 import { Users } from "../model/user.model.js";
 
+export const register = async (req, res) => {
+    try {
+        const user = await UserService.register(req.body, res);
+        sendResponse(res, {
+            status: HTTP_STATUS.OK,
+            success: true,
+            message: "User Creation success.",
+            data: user,
+        });
+    } catch (error) {
+        console.error(error);
+        sendResponse(res, {
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            success: false,
+            message: RESPONSE_MESSAGES.INTERNAL_ERROR,
+            error,
+        });
+    }
+};
+
 export const createUser = async (req, res) => {
     try {
         const user = await UserService.createUser(req.user, req.body, res);
@@ -24,10 +44,9 @@ export const createUser = async (req, res) => {
     }
 };
 
-
 export const registerStudent = async (req, res) => {
     try {
-        const user = await UserService.createStudent( req.body, res);
+        const user = await UserService.createStudent(req.body, res);
         sendResponse(res, {
             status: HTTP_STATUS.OK,
             success: true,
@@ -45,10 +64,9 @@ export const registerStudent = async (req, res) => {
     }
 };
 
-
 export const verifyUser = async (req, res) => {
     try {
-         await UserService.verifyOptWithCookieSet( req.body , res);
+        await UserService.verifyOptWithCookieSet(req.body, res);
     } catch (error) {
         console.error(error);
         sendResponse(res, {
@@ -59,7 +77,6 @@ export const verifyUser = async (req, res) => {
         });
     }
 };
-
 
 export const sendOtpForVerifyAccount = async (req, res) => {
     try {
@@ -80,7 +97,7 @@ export const sendOtpForVerifyAccount = async (req, res) => {
 
 export const changePasswordWithOldPassword = async (req, res) => {
     try {
-        await UserService.sendOtpForVerification( req.user , req.body);
+        await UserService.sendOtpForVerification(req.user, req.body);
         sendResponse(res, {
             status: HTTP_STATUS.OK,
             success: true,
@@ -127,12 +144,16 @@ export const VerifyOtpWithExpiry = async (req, res) => {
 export const logInUser = async (req, res) => {
     try {
         // console.log("----" , req.body);
-        
+
         const result = await UserService.loginUser(req.body, res);
         if (result.verifyRequest) {
-          return sendResponse(res, { status: HTTP_STATUS.OK, success: true, data: result , message: "Verification code sent to your email" });
+            return sendResponse(res, {
+                status: HTTP_STATUS.OK,
+                success: true,
+                data: result,
+                message: "Verification code sent to your email",
+            });
         }
-
     } catch (error) {
         sendResponse(res, {
             status: HTTP_STATUS.BAD_REQUEST,

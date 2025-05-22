@@ -10,9 +10,10 @@ import {
     updateUser,
     VerifyOtpWithExpiry,
     registerStudent,
-    verifyUser ,
-    changePasswordWithOldPassword ,
+    verifyUser,
+    changePasswordWithOldPassword,
     forgotPassword,
+    register,
 } from "../controller/user.controller.js";
 import userValidation from "../validations/user.validation.js";
 import {
@@ -23,6 +24,7 @@ import {
 const router = express.Router();
 
 router
+    .post("/register", register)
     .post(
         "/create",
         validate(userValidation.createUser),
@@ -30,8 +32,12 @@ router
         authorizeRoles("admin", "hod"),
         createUser
     )
-    .post("/create/student", validate(userValidation.createUser), registerStudent)
-    .post("/verify-user" , validate(userValidation.verifyOtp), verifyUser)
+    .post(
+        "/create/student",
+        validate(userValidation.createUser),
+        registerStudent
+    )
+    .post("/verify-user", validate(userValidation.verifyOtp), verifyUser)
 
     .post("/login", validate(userValidation.login), logInUser)
 
@@ -53,7 +59,11 @@ router
         changePasswordWithOldPassword
     )
 
-    .post("/forgot-password", validate(userValidation.changePasswordWithOtp), forgotPassword )
+    .post(
+        "/forgot-password",
+        validate(userValidation.changePasswordWithOtp),
+        forgotPassword
+    )
 
     .post(
         "/profile-pic-change",

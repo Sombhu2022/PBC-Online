@@ -8,7 +8,28 @@ import mongoose from "mongoose";
 import { sendCookie } from "../utils/tokenGenarate.js";
 
 export const UserService = {
-
+    async register(body, res) {
+        console.log("ok created account ");
+        // step1 : email exist or not
+        const { email } = body;
+        const isExist = await Users.findOne({ email });
+        if (isExist) {
+            throw new Error("User alrady exist ");
+        }
+        const user = await Users.create(body);
+        const otp = genarate6DigitOtp();
+        user.otp = otp;
+        user.otpExpiary = Date.now() + 5 * 60 * 1000; // OTP valid for 5 minutes
+        await user.save();
+        await sendEmail(
+            user.email,
+            `Welcome ${user.name} 🎉`,
+            `Thank you for joining <strong>PBC-Online</strong> – your trusted digital companion for academic growth and collaboration. <br><br>We're thrilled to have you on board! Whether you're a teacher, student, faculty member, or external learner, PBC-Online is here to support your journey with the right tools, resources, and community. <br><br>Start exploring and make the most of everything we offer. Let's grow together! 💡📚`
+        );
+        await sendEmail(user.email, "Verify Account - OTP", otp);
+        sendCookie(user, res, "user create successfully", 200);
+        return user;
+    },
 
     async createUser(userData, body, res) {
         console.log("ok created account ");
@@ -45,8 +66,7 @@ export const UserService = {
         return user;
     },
 
-    async createStudent( body, res) {
-       
+    async createStudent(body, res) {
         // step1 : email exist or not
         const { email } = body;
         const isExist = await Users.findOne({ email });
@@ -70,14 +90,13 @@ export const UserService = {
         );
 
         await sendEmail(user.email, "Verify Account - OTP", otp);
-        
+
         return user;
     },
 
-   
     async verifyOptWithCookieSet(body, res) {
         const user = await Users.findOne({
-            otp : body.otp,
+            otp: body.otp,
             otpExpiary: { $gt: Date.now() },
         });
         if (!user) {
@@ -122,60 +141,69 @@ export const UserService = {
     },
 
     async loginUser(body, res) {
-        console.log(body , "------------------------------------log in user" , );
-         
+        console.log(body, "------------------------------------log in user");
+
         const { email, role, password } = body;
         const user = await Users.findOne({ email: email, role: role }).select(
             "+password"
         );
         // console.log(user);
-        
+
         if (!user || !(await user.comparePassword(password))) {
             throw new Error("Invalid email or password");
         }
 
-        if(user.isVerify === false) {
+        if (user.isVerify === false) {
             await this.sendOtpForVerification(email);
             return { verifyRequest: true };
         }
 
-       return sendCookie(user, res, "user login successfully", 200);
+        return sendCookie(user, res, "user login successfully", 200);
     },
 
     async getUserById(id) {
-        
-         const user = await Users.findById(id)
+        const user = await Users.findById(id);
 
-         if(!user) {
-            throw new Error("User not found")
+        if (!user) {
+            throw new Error("User not found");
+        }
+        if (user.isProfileComplete) {
+            if (user.role === "hod") {
+                const data = await Hods.findOne(user)
+                    .populate("user", "_id name email")
+                    .populate("department", "name");
+                if (!data) {
+                    throw new Error("hod not found");
+                }
+                return data;
+            } else if (user.role === "faculty") {
+                const data = await Faculty.findOne(user)
+                    .populate("user", "_id name email")
+                    .populate("department", "name")
+                    .populate("semester", "name");
+                if (!data) {
+                    throw new Error("faculty not found");
+                }
+                return data;
+            } else if (user.role === "student") {
+                const data = await Students.findOne(user)
+                    .populate("user", "_id name email")
+                    .populate("department", "name")
+                    .populate("semester", "name");
+                if (!data) {
+                    throw new Error("student not found");
+                }
+                return data;
+            } else if (user.role === "external") {
+                const data = await Externals.findOne(user)
+                    .populate("user", "_id name email")
+                    .populate("department", "name")
+                    .populate("semester", "name");
+                if (!data) {
+                    throw new Error("external not found");
+                }
+                return data;
             }
-        if(user.isProfileComplete){
-            if(user.role === "hod"){
-                const data = await Hods.findOne(user).populate('user', '_id name email').populate('department', 'name')
-                if(!data) {
-                    throw new Error("hod not found")
-                }
-                return data
-            } else if(user.role === "faculty"){
-                const data = await Faculty.findOne(user).populate('user', '_id name email').populate('department', 'name').populate('semester', 'name')
-                if(!data) {
-                    throw new Error("faculty not found")
-                }
-                return data
-            } else if(user.role === "student"){
-                const data = await Students.findOne(user).populate('user', '_id name email').populate('department', 'name').populate('semester', 'name')
-                if(!data) {
-                    throw new Error("student not found")
-                }
-                return data
-            } else if(user.role === "external"){
-                const data = await Externals.findOne(user).populate('user', '_id name email').populate('department', 'name').populate('semester', 'name')
-                if(!data) {
-                    throw new Error("external not found")
-                }
-                return data
-            }
-        
         }
 
         console.log("user ========> ", user);
@@ -186,7 +214,6 @@ export const UserService = {
     async getAllUser(userId) {
         return await Users.find({ _id: { $ne: userId } });
     },
-
 
     async changePasswordWithOldPassword(userData, body) {
         const { oldPassword, newPassword } = body;
@@ -211,7 +238,7 @@ export const UserService = {
     },
 
     async forgotPassword(body) {
-        const { otp , password } = body;
+        const { otp, password } = body;
         const user = await this.verifyOtp(otp);
         user.password = password;
         user.save();
@@ -237,8 +264,6 @@ export const UserService = {
         await user.save();
         return user;
     },
-
-    
 
     async deleteUser(id) {
         return await Users.findByIdAndDelete(id);
