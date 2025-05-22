@@ -4,7 +4,7 @@ import { Users } from "../model/user.model.js";
 
 export const isAuthenticate = async (req, res, next) => {
   try {
-    let token = req?.cookies?.token ? req?.cookies?.token : req.headers?.authorization ;
+    let token =  req?.cookies?.token 
    console.log("token====>" , token );
    
     if (!token) {
@@ -15,10 +15,10 @@ export const isAuthenticate = async (req, res, next) => {
       });
     }
 
-    // Fix: Extract token from 'Bearer <token>'
-    if (token.startsWith("Bearer ")) {
-      token = token.split(" ")[1]; 
-    }
+    // // Fix: Extract token from 'Bearer <token>'
+    // if (token.startsWith("Bearer ")) {
+    //   token = token.split(" ")[1]; 
+    // }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     if (!decoded) {

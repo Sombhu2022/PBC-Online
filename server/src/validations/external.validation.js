@@ -65,6 +65,7 @@ class ExternalValidation {
     params: z.object({
       externalId: z.string({ required_error: "External ID is required!" }),
     }),
+    
   });
 }
 

@@ -7,10 +7,10 @@ import { authorizeRoles, isAuthenticate } from "../middlewares/authentication.mi
 const router = express.Router();
 
 router
-    .post('/', validate(departmentValidation.create), isAuthenticate , authorizeRoles("admin") , departmentController.createDepartment)
-    .get('/', departmentController.showDepartment) 
+    .post('/', validate(departmentValidation.create), isAuthenticate , authorizeRoles("admin" , "hod") , departmentController.createDepartment)
+    .get('/all', departmentController.showDepartmentList) 
     .get('/:departmentId', departmentController.showDepartment)
-    .patch('/:departmentId',  isAuthenticate , authorizeRoles("admin") , validate(departmentValidation.update), departmentController.updateDepartment)
-    .delete('/:departmentId', validate(departmentValidation.delete),  isAuthenticate , authorizeRoles("admin") , departmentController.deleteDepartment);
+    .patch('/:departmentId',  isAuthenticate , authorizeRoles("admin" , "hod") , validate(departmentValidation.update), departmentController.updateDepartment)
+    .delete('/:departmentId', validate(departmentValidation.delete),  isAuthenticate , authorizeRoles("admin" , "hod") , departmentController.deleteDepartment);
 
 export const departmentRouter = router;

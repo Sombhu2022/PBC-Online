@@ -36,7 +36,7 @@ const Members = () => {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
 
-    const { token } = useAuthStore();
+    const {  } = useAuthStore();
 
     const fetchUsers = async () => {
         try {
@@ -44,11 +44,6 @@ const Members = () => {
             const response = await axiosInstance.post(
                 "/user/get",
                 { role: display },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
             );
 
             setData(response.data.data);
