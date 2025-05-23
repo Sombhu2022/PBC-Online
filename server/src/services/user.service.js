@@ -11,24 +11,19 @@ export const UserService = {
 
 
     async createUser(userData, body, res) {
-        console.log("ok created account ");
-        if (
-            userData.role === "hod" &&
-            (body.role === "hod" || body.role === "admin")
-        ) {
-            throw new Error("Access denied !");
-        }
-
+        
         // step1 : email exist or not
-        const { email } = body;
-        const isExist = await Users.findOne({ email });
+        const { email  , role } = body;
+        const isExist = await Users.findOne({ email  });
         if (isExist) {
             throw new Error("User alrady exist ");
         }
 
         const user = await Users.create(body);
 
-        // const otp = genarate6DigitOtp();
+        const userdataWithPopulate = await Users.findById(user._id).populate("department" , "name _id").populate("semester" , "name _id")
+       
+        // const otp = genarate6DigitOtp(); 
         // user.otp = otp;
         // user.otpExpiary = Date.now() + 5 * 60 * 1000; // OTP valid for 5 minutes
 
@@ -42,7 +37,7 @@ export const UserService = {
 
         // await sendEmail(user.email, "Verify Account - OTP", otp);
         // sendCookie(user, res, "user create successfully", 200);
-        return user;
+        return userdataWithPopulate;
     },
 
     async createStudent( body, res) {
@@ -127,7 +122,7 @@ export const UserService = {
         const { email, role, password } = body;
         const user = await Users.findOne({ email: email, role: role }).select(
             "+password"
-        );
+        ).populate("department" , "name _id").populate("semester" , "name _id");
         // console.log(user);
         
         if (!user || !(await user.comparePassword(password))) {
@@ -144,7 +139,7 @@ export const UserService = {
 
     async getUserById(id) {
         
-         const user = await Users.findById(id)
+         const user = await Users.findById(id).populate("department" , "name _id").populate("semester" , "name _id")
 
          if(!user) {
             throw new Error("User not found")
@@ -184,7 +179,7 @@ export const UserService = {
     },
 
     async getAllUser(userId) {
-        return await Users.find({ _id: { $ne: userId } });
+        return await Users.find({ _id: { $ne: userId } }).populate("department" , "name _id").populate("semester" , "name _id");
     },
 
 

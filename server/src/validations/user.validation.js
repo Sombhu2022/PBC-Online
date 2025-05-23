@@ -10,10 +10,12 @@ class UserValidation {
                 .max(60, "name must be 60 charector or less "),
             email: z.string().trim().email("Invalid email format"),
             role: z.string().trim(),
+            mobile : z.string().trim().optional(),
             password: z
                 .string()
                 .trim()
                 .min(8, "Password must be at least 8 characters"),
+            department :z.string().trim().optional(), 
         }),
     });
 

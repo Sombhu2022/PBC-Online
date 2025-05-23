@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Select,
     SelectContent,
@@ -28,9 +28,13 @@ import {
 import { Plus } from "lucide-react";
 import RoutineBox from "../components/routine/RoutineBox";
 import AddRoutineDialog from "../components/routine/AddroutineDialogue";
+import { useDepartmentStore } from "../store/depertment";
+import { useAuthStore } from "../store/authStore";
 
 const Routines = () => {
     const [semester, setSemester] = useState<string>("first");
+    const { user } = useAuthStore();
+    
 
     return (
         <section className="container flex flex-col gap-4">

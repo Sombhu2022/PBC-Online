@@ -37,7 +37,7 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  const { isAuthenticated, login, user } = useAuthStore();
+  const { isAuthenticated, login, user , emailVerifyForLogin } = useAuthStore();
 
   if (isAuthenticated) {
     return <Navigate to={"/"} replace />;
@@ -70,7 +70,7 @@ const Login = () => {
         setShowVerifyPopup(true);
         return;
       }
-      navigate("/");
+      navigate("/notice-board");
     } else {
       toast.error(res.message);
     }
@@ -84,7 +84,7 @@ const Login = () => {
 
   const verifyOtp = async (otp: string) => {
     try {
-        const res = await axiosInstance.post("/auth/verify-otp", { email: verifyEmail, otp });
+        const res = await emailVerifyForLogin({ email: verifyEmail, otp:Number(otp) });
         if (res.data.success) {
             toast.success("Email verified successfully!");
             setShowVerifyPopup(false);
