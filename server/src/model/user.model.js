@@ -1,5 +1,6 @@
 import mongoose, { model, Schema } from "mongoose";
 import bcrypt from 'bcrypt'
+import { type } from "os";
 
 // table stracture 
 const userSchema = new Schema({
@@ -21,6 +22,20 @@ const userSchema = new Schema({
         ],
         trim: true
     },
+    mobile : {
+        type:String
+    } ,
+   department :  {
+        type : Schema.Types.ObjectId,
+        ref : 'department',
+        
+    },
+    semester : {
+        type :  Schema.Types.ObjectId,
+        ref : 'semester',
+        
+    } ,
+    
     password: {
         type: String,
         minLength: [8, 'password must be 8 charecter or above'],

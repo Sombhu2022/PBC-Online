@@ -12,6 +12,7 @@ import { cloudinaryConfig } from "./src/config/cloudinary.config.js"
 import { userRouter } from "./src/routes/user.routes.js"
 import { externalRouter } from "./src/routes/extarnal.routes.js"
 import cookieParser from "cookie-parser"
+import { routineRouter } from "./src/routes/routin.routes.js"
 
 const server = express()
 
@@ -31,6 +32,7 @@ server.use('/api/v1/user', userRouter)
 server.use('/api/v1/meeting', meetingRouter)
 server.use('/api/v1/noticeboard', noticeboardRouter)
 server.use('/api/v1/external' , externalRouter)
+server.use(`/api/v1/routine` , routineRouter)
 
 server.get("/", (req, res) => {
     res.send("application is run ").json({
