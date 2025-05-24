@@ -7,7 +7,8 @@ class MeetingController {
     async createMeeting(req, res) {
         try {
             const data = req.body;
-            const meeting = await meetingService.createMeeting(data);
+            
+            const meeting = await meetingService.createMeeting(data , req.user );
 
             return sendResponse(res, {
                 status: HTTP_STATUS.CREATED,
@@ -27,7 +28,7 @@ class MeetingController {
 
     async showMeeting(req, res) {
         try {
-            const meetings = await meetingService.showMeeting(req.params.email);
+            const meetings = await meetingService.showMeeting();
 
             return sendResponse(res, {
                 status: HTTP_STATUS.OK,

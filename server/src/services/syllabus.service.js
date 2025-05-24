@@ -27,15 +27,16 @@ class SyllabusService {
 
   // async showSyllabus({ department, semester, paperCode }) {
   async showSyllabus(data) {
-    const department = data.department;
-    const semester = data.semester;
-    const paperCode = data.paperCode;
-    const filter = { department };
-    if (semester) filter.semester = semester;
-    if (paperCode) filter.paperCode = paperCode;
+    // const department = data.department;
+    // const semester = data.semester;
+    // const paperCode = data.paperCode;
+    // const filter = { department };
+    // if (semester) filter.semester = semester;
+    // if (paperCode) filter.paperCode = paperCode;
 
-    const syllabus = await Syllabus.find(filter).select("media");
-    console.log(`syllabus skd=>${syllabus}`);
+    // const syllabus = await Syllabus.find(filter).select("media");
+    const syllabus = await Syllabus.find({}).populate("semester" , "name _id")
+    // console.log(`syllabus skd=>${syllabus}`);
 
     return syllabus || null;
   }

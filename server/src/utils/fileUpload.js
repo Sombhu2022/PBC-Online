@@ -5,7 +5,7 @@ export const imageFileUploader = async (file)=>{
 
   try {
       const data =await cloudinary.uploader.upload(file ,{
-          folder:"bookBuddy"
+          folder:"pbc-online"
       })
 
     return { url:data.secure_url , public_id: data.public_id , error:null}  

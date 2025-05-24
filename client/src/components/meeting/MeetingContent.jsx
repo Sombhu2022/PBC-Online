@@ -50,6 +50,8 @@ const MeetingContent = ({
     date,
     time,
     participants,
+    meetingType ,
+    meetingLink ,
     location,
 }) => {
     const [meetingData, setMeetingData] = useState({
@@ -64,17 +66,31 @@ const MeetingContent = ({
     let status;
     let background;
     const meetingDate = parseDate(date);
-    const currentDate = new Date();
-    if (meetingDate.toDateString() === currentDate.toDateString()) {
-        status = "Today";
-        background = "bg-[#35c735]";
-    } else if (meetingDate.toDateString() > currentDate.toDateString()) {
-        status = "Upcoming";
-        background = `bg-[#1e87b8]`;
-    } else {
-        status = "Completed";
-        background = `bg-[#838586]`;
-    }
+    const currentDate = new Date;
+
+    // Remove time from both dates for accurate comparison
+const current = new Date(
+  currentDate.getFullYear(),
+  currentDate.getMonth(),
+  currentDate.getDate()
+);
+
+const meeting = new Date(
+  meetingDate.getFullYear(),
+  meetingDate.getMonth(),
+  meetingDate.getDate()
+);
+
+  if (meeting.getTime() === current.getTime()) {
+  status = "Today";
+  background = "bg-[#35c735]";
+} else if (meeting.getTime() > current.getTime()) {
+  status = "Upcoming";
+  background = "bg-[#1e87b8]";
+} else {
+  status = "Completed";
+  background = "bg-[#838586]";
+}
 
     return (
         <>
@@ -86,13 +102,13 @@ const MeetingContent = ({
                                 <div className="w-full flex flex-row gap-4">
                                     {/* <div className={`h-5 w-fit rounded-[10px] mt-[2px] justify-center items-center ${background} text-black font-normal  text-[14px]`}>{status}</div> */}
                                     <div
-                                        className={`px-2  rounded-full text-white text-[12px] font-normal  shadow-sm ${background} flex items-center justify-center`}
+                                        className={`px-2  rounded-full text-white text-[12px] font-normal  shadow-sm ${meetingType === "online" ? "bg-green-500":"bg-orange-500"} flex items-center justify-center`}
                                     >
-                                        {status}
+                                        {meetingType === "online" ? "Online" : "Offline" }
                                     </div>
 
                                     <div className=" justify-center items-center">
-                                        {title}
+                                       { title }
                                     </div>
                                 </div>
                             </CardTitle>
@@ -100,10 +116,10 @@ const MeetingContent = ({
                         </div>
                         <div className="flex w-fit gap-3">
                             <Dialog>
-                                <DialogTrigger className="justify-around items-center px-4 py-2 text-sm bg-red-500 text-white rounded-md hover:bg-red-700 transition  flex gap-2">
+                                {/* <DialogTrigger className="justify-around items-center px-4 py-2 text-sm bg-red-500 text-white rounded-md hover:bg-red-700 transition  flex gap-2">
                                     Delete
                                     <Trash2 className="p-1" />
-                                </DialogTrigger>
+                                </DialogTrigger> */}
                                 <DialogContent>
                                     <DialogHeader>
                                         <DialogTitle>
@@ -120,9 +136,9 @@ const MeetingContent = ({
                             </Dialog>
 
                             <Dialog>
-                                <DialogTrigger className="justify-around items-center px-4 py-2 text-sm bg-[#28449ede] text-white rounded-md hover:bg-[#28439e] transition  flex gap-2">
+                                {/* <DialogTrigger className="justify-around items-center px-4 py-2 text-sm bg-[#28449ede] text-white rounded-md hover:bg-[#28439e] transition  flex gap-2">
                                     Edit <FilePenLine className="p-1" />
-                                </DialogTrigger>
+                                </DialogTrigger> */}
                                 <DialogContent>
                                     <DialogHeader>
                                         <DialogTitle>
@@ -235,8 +251,9 @@ const MeetingContent = ({
                 </CardHeader>
 
                 <CardContent className="px-6 py-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                    {description}
-                    {status}
+                    {description} <br/>
+                   type :- {meetingType} <br/>
+                    {meetingType === "online" && " meeting Link :-"}  {meetingLink}
                 </CardContent>
 
                 <CardFooter className="flex justify-around px-6 py-[10px]rounded-b-2xl  ">
@@ -281,7 +298,7 @@ const MeetingContent = ({
                         <MapPin className="w-4 h-4  " />
                         <div className=" flex   gap-2 items-center">
                             <p className="text-[13px] ">Location</p>
-                            <p className="text-[13px] ">{location}</p>
+                            <p className="text-[13px] ">{meetingType === "online" ? "Online" :  location}</p>
                         </div>
                     </div>
                 </CardFooter>

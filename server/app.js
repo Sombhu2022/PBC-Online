@@ -12,12 +12,18 @@ import { cloudinaryConfig } from "./src/config/cloudinary.config.js"
 import { userRouter } from "./src/routes/user.routes.js"
 import { externalRouter } from "./src/routes/extarnal.routes.js"
 import cookieParser from "cookie-parser"
+import fileUpload from "express-fileupload";
 import { routineRouter } from "./src/routes/routin.routes.js"
 
 const server = express()
 
 server.use(corsConfig)
 cloudinaryConfig()
+//    server.use(fileUpload(
+//         {
+//          limits: { fileSize: 50 * 1024 * 1024 }, // 100 MB (adjust this as needed)
+//         }
+//     ))
 server.use(bodyParser.json({ limit: "50mb" }))
 server.use(express.json({ limit: "50mb" }))
 server.use(bodyParser.urlencoded({ limit: "50mb", extended: true }))
