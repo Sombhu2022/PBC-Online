@@ -5,7 +5,7 @@ const meetingSchema = new Schema({
         ref: 'user',
         required: true,
     },
-    title: {
+    subject: {
         type: String,
         required: [true, 'title is required !'],
         maxLength: [100, 'title should be in 100 letter'],
@@ -19,10 +19,25 @@ const meetingSchema = new Schema({
         minLength: [3, 'description must be in 3 letter '],
         trim: true,
     },
-    mettingTime: {
+    meetingDate: {
         type: Date,
-        required: [true, 'metting time is required !'],
+        required: [true, 'meeting time is required !'],
     },
+    meetingTime: {
+        type: String,
+        required: [true, 'meeting time is required !'],
+    },
+    meetingType : {
+        type: String,
+        enum : ['online','offline'],
+        default : 'offline' ,
+        required: [true, 'meeting type is required !'],
+    },
+    meetingLink:{
+        type: String,
+       
+        trim: true,
+    } ,
     joinusList: [{
         type: String,
         required: [true, 'joinusList is required !'],
@@ -31,11 +46,11 @@ const meetingSchema = new Schema({
             'Please provide a valid email address'
         ],
     }],
-    mettingArea: {
+    meetingArea: {
         type: String,
-        required: [true, 'metting area is required !'],
+
         trim: true,
     }
 
 }, { timestamps: true })
-export const Mettings = model('metting', meetingSchema)
+export const Meetings = model('meeting', meetingSchema)

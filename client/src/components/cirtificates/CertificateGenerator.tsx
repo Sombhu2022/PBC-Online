@@ -16,11 +16,11 @@ import { Mail } from "lucide-react";
 
 const CertificateGenerator = () => {
     const [formData, setFormData] = useState({
-        examinerName: " Mr. Biswajit Laya",
+        examinerName: " Mr. Biswajit Laha",
         examinerDesignation: "SACT",
         examinerDept: "Computer Science",
-        examinerCollege: "Kharagpur College",
-        examinerAddress: "West Medinipur, 721305, West Bengal",
+        examinerCollege: "Panskura Banamali College",
+        examinerAddress: "West Medinipur , 721305, West Bengal",
         year: "2025",
         semester: "I",
         degree : "UG",
@@ -160,6 +160,7 @@ const CertificateGenerator = () => {
                                     name="examinerCollege"
                                     value={formData.examinerCollege}
                                     onChange={handleChange}
+                                    // disabled={true}
                                 />
                             </div>
 

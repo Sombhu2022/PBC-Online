@@ -4,9 +4,8 @@ class MeetingValidation {
     // Create Meeting
     create = z.object({
         body: z.object({
-            user: z.string({ required_error: "Creator (user) ID is required" }),
-
-            title: z
+          
+            subject: z
                 .string({ required_error: "Meeting title is required" })
                 .min(3, "Title must be at least 3 characters")
                 .max(100, "Title must not exceed 100 characters")
@@ -16,17 +15,29 @@ class MeetingValidation {
                 .string({ required_error: "Meeting description is required" })
                 .min(3, "Description must be at least 3 characters")
                 .max(1000, "Description must not exceed 1000 characters")
-                .trim(),
+                .trim()
+                .optional(),
 
-            mettingTime: z
+            meetingTime: z
+                .string({ required_error: "Meeting time is required" })
+                .min(1, "Meeting time cannot be empty"), // ISO datetime string
+            meetingDate: z
                 .string({ required_error: "Meeting time is required" })
                 .min(1, "Meeting time cannot be empty"), // ISO datetime string
 
-            mettingArea: z
+            meetingArea: z
                 .string({ required_error: "Meeting area is required" })
                 .min(3, "Meeting area must be at least 3 characters")
                 .max(255, "Meeting area must not exceed 255 characters")
+                .trim().optional(),
+
+            meetingType: z
+                .string({ required_error: "Meeting type is required" })
+                .min(3, "Meeting type must be at least 3 characters")
+                .max(255, "Meeting type must not exceed 255 characters")
                 .trim(),
+             meetingLink : z
+                .string({ required_error: "Meeting link is required" }).optional(),
 
             joinusList: z
                 .array(

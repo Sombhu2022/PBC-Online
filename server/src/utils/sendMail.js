@@ -263,3 +263,5 @@ export const sendEmail = async (receiver, subject, message) => {
         console.error("Email sending failed", error);
     }
 };
+
+
